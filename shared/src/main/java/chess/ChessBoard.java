@@ -41,7 +41,15 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        // TODO: Implement resetBoard() logic
+    }
+
+    @Override
+    public String toString() {
+        // TODO: Make string representation more readable
+        return "ChessBoard{" +
+                "squares=" + Arrays.toString(squares) +
+                '}';
     }
 
     @Override
