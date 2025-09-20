@@ -71,8 +71,8 @@ public class ChessPiece {
         switch (type) {
             case KING:
                 return calculateKingMoves(board, myPosition);
-//            case QUEEN:
-//                return calculateQueenMoves(board, myPosition);
+            case QUEEN:
+                return calculateQueenMoves(board, myPosition);
             case BISHOP:
                 return calculateBishopMoves(board, myPosition);
             case KNIGHT:
@@ -215,6 +215,13 @@ public class ChessPiece {
         checkLongMove(board, myPosition, row, col + 1, 0, vertical, possibleMoves);
         checkLongMove(board, myPosition, row, col - 1, 0, negVertical, possibleMoves);
 
+        return possibleMoves;
+    }
+
+    private Collection<ChessMove> calculateQueenMoves(ChessBoard board, ChessPosition myPosition) {
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
+        possibleMoves.addAll(calculateBishopMoves(board, myPosition));
+        possibleMoves.addAll(calculateRookMoves(board, myPosition));
         return possibleMoves;
     }
 }
