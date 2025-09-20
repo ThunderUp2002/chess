@@ -1,7 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -68,35 +68,101 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ChessPiece piece = board.getPiece(myPosition);
+        switch (type) {
+            case KING:
+                return calculateKingMoves(board, myPosition);
+//            case QUEEN:
+//                return calculateQueenMoves(board, myPosition);
+//            case BISHOP:
+//                return calculateBishopMoves(board, myPosition);
+            case KNIGHT:
+                return calculateKnightMoves(board, myPosition);
+//            case ROOK:
+//                return calculateRookMoves(board, myPosition);
+//            case PAWN:
+//                return calculatePawnMoves(board, myPosition);
+            default:
+                return new ArrayList<>();
+        }
+    }
 
-        if (piece.getPieceType() == PieceType.KING) {
-            return List.of();
+    private boolean inBounds(int row, int col) {
+        return row >= 1 && row < 8 && col >= 1 && col <= 8;
+    }
+
+    public void checkShortMove(ChessBoard board, ChessPosition futurePosition, int row, int col, Collection<ChessMove> possibleMoves) {
+        ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+        if (piece == null) {
+            possibleMoves.add(new ChessMove(futurePosition, new ChessPosition(row, col), null));
+        }
+        else if (piece.getTeamColor() != this.getTeamColor()) {
+            possibleMoves.add(new ChessMove(futurePosition, new ChessPosition(row, col), null));
+        }
+    }
+
+    private Collection<ChessMove> calculateKingMoves(ChessBoard board, ChessPosition myPosition) {
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        if (inBounds(row + 1, col)) {
+            checkShortMove(board, myPosition, row + 1, col, possibleMoves);
+        }
+        if (inBounds(row + 1, col + 1)) {
+            checkShortMove(board, myPosition, row + 1, col + 1, possibleMoves);
+        }
+        if (inBounds(row, col + 1)) {
+            checkShortMove(board, myPosition, row, col + 1, possibleMoves);
+        }
+        if (inBounds(row - 1, col + 1)) {
+            checkShortMove(board, myPosition, row - 1, col + 1, possibleMoves);
+        }
+        if (inBounds(row - 1, col)) {
+            checkShortMove(board, myPosition, row - 1, col, possibleMoves);
+        }
+        if (inBounds(row - 1, col - 1)) {
+            checkShortMove(board, myPosition, row - 1, col - 1, possibleMoves);
+        }
+        if (inBounds(row, col - 1)) {
+            checkShortMove(board, myPosition, row, col - 1, possibleMoves);
+        }
+        if (inBounds(row + 1, col - 1)) {
+            checkShortMove(board, myPosition, row + 1, col - 1, possibleMoves);
         }
 
-        else if (piece.getPieceType() == PieceType.QUEEN) {
-            return List.of();
+        return possibleMoves;
+    }
+
+    private Collection<ChessMove> calculateKnightMoves(ChessBoard board, ChessPosition myPosition) {
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        if (inBounds(row + 2, col + 1)) {
+            checkShortMove(board, myPosition, row + 2, col + 1, possibleMoves);
+        }
+        if (inBounds(row + 1, col + 2)) {
+            checkShortMove(board, myPosition, row + 1, col + 2, possibleMoves);
+        }
+        if (inBounds(row - 1, col + 2)) {
+            checkShortMove(board, myPosition, row - 1, col + 2, possibleMoves);
+        }
+        if (inBounds(row - 2, col + 1)) {
+            checkShortMove(board, myPosition, row - 2, col + 1, possibleMoves);
+        }
+        if (inBounds(row - 2, col - 1)) {
+            checkShortMove(board, myPosition, row - 2, col - 1, possibleMoves);
+        }
+        if (inBounds(row - 1, col - 2)) {
+            checkShortMove(board, myPosition, row - 1, col - 2, possibleMoves);
+        }
+        if (inBounds(row + 1, col - 2)) {
+            checkShortMove(board, myPosition, row + 1, col - 2, possibleMoves);
+        }
+        if (inBounds(row + 2, col - 1)) {
+            checkShortMove(board, myPosition, row + 2, col - 1, possibleMoves);
         }
 
-        else if (piece.getPieceType() == PieceType.BISHOP) {
-            return List.of(new ChessMove(new ChessPosition (5, 4), new ChessPosition(1, 8), null));
-        }
-
-        else if (piece.getPieceType() == PieceType.KNIGHT) {
-            return List.of();
-        }
-
-        else if (piece.getPieceType() == PieceType.ROOK) {
-            return List.of();
-        }
-
-        else if (piece.getPieceType() == PieceType.PAWN) {
-            return List.of();
-        }
-
-        else {
-            // Return error?
-            return List.of();
-        }
+        return possibleMoves;
     }
 }
