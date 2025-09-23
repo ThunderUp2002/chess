@@ -229,9 +229,9 @@ public class ChessPiece {
     public void firstWhiteMove(ChessBoard board, ChessPosition myPosition, int row, int col, Collection<ChessMove> possibleMoves) {
         if (row == 2) {
             if (inBounds(row + 2, col)) {
-                ChessPiece frontPiece = board.getPiece(new ChessPosition(row + 1, col));
-                ChessPiece piece = board.getPiece(new ChessPosition(row + 2, col));
-                if (frontPiece == null && piece == null) {
+                ChessPiece firstPiece = board.getPiece(new ChessPosition(row + 1, col));
+                ChessPiece secondPiece = board.getPiece(new ChessPosition(row + 2, col));
+                if (firstPiece == null && secondPiece == null) {
                     possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row + 2, col), null));
                 }
             }
@@ -280,9 +280,9 @@ public class ChessPiece {
     public void firstBlackMove(ChessBoard board, ChessPosition myPosition, int row, int col, Collection<ChessMove> possibleMoves) {
         if (row == 7) {
             if (inBounds(row - 2, col)) {
-                ChessPiece frontPiece = board.getPiece(new ChessPosition(row - 1, col));
-                ChessPiece piece = board.getPiece(new ChessPosition(row - 2, col));
-                if (frontPiece == null && piece == null) {
+                ChessPiece firstPiece = board.getPiece(new ChessPosition(row - 1, col));
+                ChessPiece secondPiece = board.getPiece(new ChessPosition(row - 2, col));
+                if (firstPiece == null && secondPiece == null) {
                     possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row - 2, col), null));
                 }
             }
