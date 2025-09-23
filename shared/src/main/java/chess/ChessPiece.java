@@ -134,30 +134,14 @@ public class ChessPiece {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
-        if (inBounds(row + 2, col + 1)) {
-            checkShortMove(board, myPosition, row + 2, col + 1, possibleMoves);
-        }
-        if (inBounds(row + 1, col + 2)) {
-            checkShortMove(board, myPosition, row + 1, col + 2, possibleMoves);
-        }
-        if (inBounds(row - 1, col + 2)) {
-            checkShortMove(board, myPosition, row - 1, col + 2, possibleMoves);
-        }
-        if (inBounds(row - 2, col + 1)) {
-            checkShortMove(board, myPosition, row - 2, col + 1, possibleMoves);
-        }
-        if (inBounds(row - 2, col - 1)) {
-            checkShortMove(board, myPosition, row - 2, col - 1, possibleMoves);
-        }
-        if (inBounds(row - 1, col - 2)) {
-            checkShortMove(board, myPosition, row - 1, col - 2, possibleMoves);
-        }
-        if (inBounds(row + 1, col - 2)) {
-            checkShortMove(board, myPosition, row + 1, col - 2, possibleMoves);
-        }
-        if (inBounds(row + 2, col - 1)) {
-            checkShortMove(board, myPosition, row + 2, col - 1, possibleMoves);
-        }
+        checkShortMove(board, myPosition, row + 2, col + 1, possibleMoves);
+        checkShortMove(board, myPosition, row + 1, col + 2, possibleMoves);
+        checkShortMove(board, myPosition, row - 1, col + 2, possibleMoves);
+        checkShortMove(board, myPosition, row - 2, col + 1, possibleMoves);
+        checkShortMove(board, myPosition, row - 2, col - 1, possibleMoves);
+        checkShortMove(board, myPosition, row - 1, col - 2, possibleMoves);
+        checkShortMove(board, myPosition, row + 1, col - 2, possibleMoves);
+        checkShortMove(board, myPosition, row + 2, col - 1, possibleMoves);
 
         return possibleMoves;
     }
