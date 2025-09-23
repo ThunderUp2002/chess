@@ -82,26 +82,26 @@ public class ChessPiece {
         return row > 0 && row <= 8  && col > 0 && col <= 8;
     }
 
-    public void checkShortMove(ChessBoard board, ChessPosition futurePosition, int row, int col, Collection<ChessMove> possibleMoves) {
+    public void checkShortMove(ChessBoard board, ChessPosition currentPosition, int row, int col, Collection<ChessMove> possibleMoves) {
         ChessPiece piece = board.getPiece(new ChessPosition(row, col));
         if (piece == null) {
-            possibleMoves.add(new ChessMove(futurePosition, new ChessPosition(row, col), null));
+            possibleMoves.add(new ChessMove(currentPosition, new ChessPosition(row, col), null));
         }
         else if (piece.getTeamColor() != this.getTeamColor()) {
-            possibleMoves.add(new ChessMove(futurePosition, new ChessPosition(row, col), null));
+            possibleMoves.add(new ChessMove(currentPosition, new ChessPosition(row, col), null));
         }
     }
 
-    public void checkLongMove(ChessBoard board, ChessPosition futurePosition, int row, int col, int horizontal, int vertical, Collection<ChessMove> possibleMoves) {
+    public void checkLongMove(ChessBoard board, ChessPosition currentPosition, int row, int col, int horizontal, int vertical, Collection<ChessMove> possibleMoves) {
         while (inBounds(row, col)) {
             ChessPiece piece = board.getPiece(new ChessPosition(row, col));
             if (piece == null) {
-                possibleMoves.add(new ChessMove(futurePosition, new ChessPosition(row, col), null));
+                possibleMoves.add(new ChessMove(currentPosition, new ChessPosition(row, col), null));
                 row = row + horizontal;
                 col = col + vertical;
             }
             else if (piece.getTeamColor() != this.getTeamColor()) {
-                possibleMoves.add(new ChessMove(futurePosition, new ChessPosition(row, col), null));
+                possibleMoves.add(new ChessMove(currentPosition, new ChessPosition(row, col), null));
                 break;
             }
             else {
