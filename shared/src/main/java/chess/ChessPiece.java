@@ -83,12 +83,14 @@ public class ChessPiece {
     }
 
     public void checkShortMove(ChessBoard board, ChessPosition currentPosition, int row, int col, Collection<ChessMove> possibleMoves) {
-        ChessPiece piece = board.getPiece(new ChessPosition(row, col));
-        if (piece == null) {
-            possibleMoves.add(new ChessMove(currentPosition, new ChessPosition(row, col), null));
-        }
-        else if (piece.getTeamColor() != this.getTeamColor()) {
-            possibleMoves.add(new ChessMove(currentPosition, new ChessPosition(row, col), null));
+        if (inBounds(row, col)) {
+            ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+            if (piece == null) {
+                possibleMoves.add(new ChessMove(currentPosition, new ChessPosition(row, col), null));
+            }
+            else if (piece.getTeamColor() != this.getTeamColor()) {
+                possibleMoves.add(new ChessMove(currentPosition, new ChessPosition(row, col), null));
+            }
         }
     }
 
@@ -115,30 +117,14 @@ public class ChessPiece {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
-        if (inBounds(row + 1, col)) {
-            checkShortMove(board, myPosition, row + 1, col, possibleMoves);
-        }
-        if (inBounds(row + 1, col + 1)) {
-            checkShortMove(board, myPosition, row + 1, col + 1, possibleMoves);
-        }
-        if (inBounds(row, col + 1)) {
-            checkShortMove(board, myPosition, row, col + 1, possibleMoves);
-        }
-        if (inBounds(row - 1, col + 1)) {
-            checkShortMove(board, myPosition, row - 1, col + 1, possibleMoves);
-        }
-        if (inBounds(row - 1, col)) {
-            checkShortMove(board, myPosition, row - 1, col, possibleMoves);
-        }
-        if (inBounds(row - 1, col - 1)) {
-            checkShortMove(board, myPosition, row - 1, col - 1, possibleMoves);
-        }
-        if (inBounds(row, col - 1)) {
-            checkShortMove(board, myPosition, row, col - 1, possibleMoves);
-        }
-        if (inBounds(row + 1, col - 1)) {
-            checkShortMove(board, myPosition, row + 1, col - 1, possibleMoves);
-        }
+        checkShortMove(board, myPosition, row + 1, col, possibleMoves);
+        checkShortMove(board, myPosition, row + 1, col + 1, possibleMoves);
+        checkShortMove(board, myPosition, row, col + 1, possibleMoves);
+        checkShortMove(board, myPosition, row - 1, col + 1, possibleMoves);
+        checkShortMove(board, myPosition, row - 1, col, possibleMoves);
+        checkShortMove(board, myPosition, row - 1, col - 1, possibleMoves);
+        checkShortMove(board, myPosition, row, col - 1, possibleMoves);
+        checkShortMove(board, myPosition, row + 1, col - 1, possibleMoves);
 
         return possibleMoves;
     }
