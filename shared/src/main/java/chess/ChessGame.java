@@ -91,6 +91,29 @@ public class ChessGame {
         return false;
     }
 
+    private boolean isInCheckmateWithBoard(TeamColor teamColor, ChessBoard board) {
+        ChessPosition kingPosition = findKingPosition(board, teamColor);
+        if (kingPosition == null) {
+            return false;
+        }
+        if (!isInCheck(teamColor)) {
+            return false;
+        }
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    Collection<ChessMove> legalMoves = validMoves(position);
+                    if (!legalMoves.isEmpty()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * Gets a valid moves for a piece at the given location
      *
@@ -174,7 +197,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return isInCheckmateWithBoard(teamColor, this.board);
     }
 
     /**
