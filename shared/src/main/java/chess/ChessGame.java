@@ -151,7 +151,7 @@ public class ChessGame {
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(position);
                 if (piece != null && piece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> moves = validMoves(position);
+                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
                     for (ChessMove move : moves) {
                         if (move.getEndPosition().equals(kingPosition)) {
                             return true;
