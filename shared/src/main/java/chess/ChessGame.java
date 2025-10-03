@@ -69,6 +69,28 @@ public class ChessGame {
         }
     }
 
+    private boolean isInCheckWithBoard(TeamColor teamColor, ChessBoard board) {
+        ChessPosition kingPosition = findKingPosition(board, teamColor);
+        if (kingPosition == null) {
+            return false;
+        }
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null && piece.getTeamColor() != teamColor) {
+                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
+                    for (ChessMove move : moves) {
+                        if (move.getEndPosition().equals(kingPosition)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Gets a valid moves for a piece at the given location
      *
@@ -89,7 +111,7 @@ public class ChessGame {
             ChessPiece testPiece = tempBoard.getPiece(move.getStartPosition());
             tempBoard.addPiece(move.getEndPosition(), testPiece);
             tempBoard.addPiece(move.getStartPosition(), null);
-            if (!isInCheck(piece.getTeamColor())) {
+            if (!isInCheckWithBoard(piece.getTeamColor(), tempBoard)) {
                 legalMoves.add(move);
             }
         }
@@ -142,25 +164,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ChessPosition kingPosition = findKingPosition(board, teamColor);
-        if (kingPosition == null) {
-            return false;
-        }
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition position = new ChessPosition(row, col);
-                ChessPiece piece = board.getPiece(position);
-                if (piece != null && piece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
-                    for (ChessMove move : moves) {
-                        if (move.getEndPosition().equals(kingPosition)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        return isInCheckWithBoard(teamColor, this.board);
     }
 
     /**
