@@ -113,6 +113,7 @@ public class ChessGame {
         }
         if (move.getPromotionPiece() != null) {
             board.addPiece(move.getEndPosition(), new ChessPiece(teamTurn, move.getPromotionPiece()));
+            board.addPiece(move.getStartPosition(), null);
         }
         else {
             board.addPiece(move.getEndPosition(), piece);
