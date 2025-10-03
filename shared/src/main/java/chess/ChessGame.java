@@ -81,7 +81,7 @@ public class ChessGame {
         if (piece == null) {
             return null;
         }
-        Collection<ChessMove> validMoves = new ArrayList<>();
+        Collection<ChessMove> legalMoves = new ArrayList<>();
         Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
         for (ChessMove move : possibleMoves) {
             ChessBoard tempBoard = new ChessBoard();
@@ -90,10 +90,10 @@ public class ChessGame {
             tempBoard.addPiece(move.getEndPosition(), testPiece);
             tempBoard.addPiece(move.getStartPosition(), null);
             if (!isInCheck(piece.getTeamColor())) {
-                validMoves.add(move);
+                legalMoves.add(move);
             }
         }
-        return validMoves;
+        return legalMoves;
     }
 
     /**
