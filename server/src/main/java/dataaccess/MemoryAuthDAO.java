@@ -1,20 +1,27 @@
 package dataaccess;
 
 import model.AuthData;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO {
+    final private HashMap<String, AuthData> authTokens = new HashMap<>();
+
     @Override
     public AuthData createAuth(AuthData authData) throws DataAccessException {
-        return null;
+        authData = new AuthData(UUID.randomUUID().toString(), authData.username());
+
+        authTokens.put(authData.authToken(), authData);
+        return authData;
     }
 
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
-        return null;
+        return authTokens.get(authToken);
     }
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-
+        authTokens.clear();
     }
 }
