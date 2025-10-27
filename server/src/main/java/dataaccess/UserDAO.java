@@ -7,5 +7,5 @@ public interface UserDAO {
 
     UserData getUser(String username) throws DataAccessException;
 
-    void deleteUsers(String username) throws DataAccessException;
+    void deleteUsers() throws DataAccessException;
 }
