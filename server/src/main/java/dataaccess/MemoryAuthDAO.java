@@ -1,4 +1,20 @@
 package dataaccess;
 
-public class MemoryAuthDAO {
+import model.AuthData;
+
+public class MemoryAuthDAO implements AuthDAO {
+    @Override
+    public AuthData createAuth(AuthData authData) throws DataAccessException {
+        return null;
+    }
+
+    @Override
+    public AuthData getAuth(String authToken) throws DataAccessException {
+        return null;
+    }
+
+    @Override
+    public void deleteAuth(String authToken) throws DataAccessException {
+
+    }
 }
