@@ -2,10 +2,21 @@ package server;
 
 import io.javalin.*;
 import io.javalin.http.Context;
+import handler.*;
+import service.*;
+import dataaccess.*;
 
 public class Server {
 
     private final Javalin javalin;
+
+    private final AuthDAO authDAO = new MemoryAuthDAO();
+    private final GameDAO gameDAO = new MemoryGameDAO();
+    private final UserDAO userDAO = new MemoryUserDAO();
+
+    private final ClearService clearService = new ClearService(authDAO, gameDAO, userDAO);
+    // private final GameService gameService = new GameService();
+    // private final UserService userService = new UserService();
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
@@ -52,6 +63,11 @@ public class Server {
     }
 
     private void clear(Context cxt) {
+        try {
+            ClearHandler.handle(cxt, clearService);
+        } catch (DataAccessException e) {
+            cxt.status(500).result("Error");
+        }
 
     }
 }
