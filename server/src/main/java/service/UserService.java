@@ -7,7 +7,6 @@ import exceptions.GeneralException;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import responses.LoginResponse;
-import responses.LogoutResponse;
 import responses.RegisterResponse;
 import model.UserData;
 import model.AuthData;
