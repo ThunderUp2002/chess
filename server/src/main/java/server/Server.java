@@ -15,8 +15,8 @@ public class Server {
     private final UserDAO userDAO = new MemoryUserDAO();
 
     private final ClearService clearService = new ClearService(authDAO, gameDAO, userDAO);
-    // private final GameService gameService = new GameService();
-    // private final UserService userService = new UserService();
+    private final GameService gameService = new GameService(authDAO, gameDAO);
+    private final UserService userService = new UserService(authDAO, userDAO);
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
@@ -38,8 +38,8 @@ public class Server {
         javalin.stop();
     }
 
-    private void register(Context cxt) {
-
+    private void register(Context cxt) throws Exception {
+        RegisterHandler.handle(cxt, userService);
     }
 
     private void login(Context cxt) {
@@ -62,12 +62,7 @@ public class Server {
 
     }
 
-    private void clear(Context cxt) {
-        try {
-            ClearHandler.handle(cxt, clearService);
-        } catch (DataAccessException e) {
-            cxt.status(500).result("Error");
-        }
-
+    private void clear(Context cxt) throws DataAccessException {
+        ClearHandler.handle(cxt, clearService);
     }
 }
