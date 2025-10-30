@@ -54,8 +54,8 @@ public class Server {
 
     }
 
-    private void createGame(Context cxt) {
-
+    private void createGame(Context cxt) throws Exception {
+        CreateGameHandler.handle(cxt, gameService);
     }
 
     private void joinGame(Context cxt) {
