@@ -42,12 +42,12 @@ public class Server {
         RegisterHandler.handle(cxt, userService);
     }
 
-    private void login(Context cxt) {
-
+    private void login(Context cxt) throws Exception {
+        LoginHandler.handle(cxt, userService);
     }
 
-    private void logout(Context cxt) {
-
+    private void logout(Context cxt) throws Exception {
+        LogoutHandler.handle(cxt, userService);
     }
 
     private void listGames(Context cxt) {

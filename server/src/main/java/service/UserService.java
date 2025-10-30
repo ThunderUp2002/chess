@@ -3,10 +3,16 @@ package service;
 import dataaccess.*;
 import exceptions.BadRequestException;
 import exceptions.AlreadyTakenException;
+import exceptions.GeneralException;
+import requests.LoginRequest;
 import requests.RegisterRequest;
+import responses.LoginResponse;
+import responses.LogoutResponse;
 import responses.RegisterResponse;
 import model.UserData;
 import model.AuthData;
+
+import java.util.Objects;
 
 public class UserService {
 
@@ -29,5 +35,20 @@ public class UserService {
         userDAO.createUser(userData);
         AuthData authData = authDAO.createAuth(request.username());
         return new RegisterResponse(request.username(), authData.authToken());
+    }
+
+    public LoginResponse login(LoginRequest request) throws Exception {
+        UserData userData = userDAO.getUser(request.username());
+        if (userData != null) {
+            if (Objects.equals(request.password(), userData.password())) {
+                AuthData authData = authDAO.createAuth(request.username());
+                return new LoginResponse(request.username(), authData.authToken());
+            }
+        }
+        throw new GeneralException("Error: something went wrong");
+    }
+
+    public void logout(String authToken) throws Exception {
+        authDAO.deleteAuth(authToken);
     }
 }
