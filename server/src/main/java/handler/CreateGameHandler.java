@@ -14,9 +14,13 @@ public class CreateGameHandler {
 
     public static void handle(Context cxt, GameService gameService) throws Exception {
         try {
+            String authToken = cxt.header("authorization");
+            if (authToken == null || authToken.isEmpty()) {
+                throw new UnauthorizedException("Error: unauthorized");
+            }
             Gson gson = new Gson();
             CreateGameRequest request = gson.fromJson(cxt.body(), CreateGameRequest.class);
-            CreateGameResponse response = gameService.createGame(request);
+            CreateGameResponse response = gameService.createGame(request, authToken);
             cxt.status(200);
             cxt.result(gson.toJson(response));
         } catch (BadRequestException e) {
