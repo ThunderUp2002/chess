@@ -50,16 +50,16 @@ public class Server {
         LogoutHandler.handle(cxt, userService);
     }
 
-    private void listGames(Context cxt) {
-
+    private void listGames(Context cxt) throws Exception {
+        ListGamesHandler.handle(cxt, gameService);
     }
 
     private void createGame(Context cxt) throws Exception {
         CreateGameHandler.handle(cxt, gameService);
     }
 
-    private void joinGame(Context cxt) {
-
+    private void joinGame(Context cxt) throws Exception {
+        JoinGameHandler.handle(cxt, gameService);
     }
 
     private void clear(Context cxt) throws DataAccessException {
