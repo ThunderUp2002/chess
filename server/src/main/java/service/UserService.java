@@ -52,7 +52,7 @@ public class UserService {
         return new LoginResponse(request.username(), authData.authToken());
     }
 
-    public void logout(String authToken) throws Exception {
+    public void logout(String authToken) throws UnauthorizedException, DataAccessException {
         authDAO.deleteAuth(authToken);
     }
 }

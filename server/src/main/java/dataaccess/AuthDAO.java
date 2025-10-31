@@ -1,5 +1,6 @@
 package dataaccess;
 
+import exceptions.UnauthorizedException;
 import model.*;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ public interface AuthDAO {
 
     Map<String, AuthData> getAllAuths() throws DataAccessException;
 
-    void deleteAuth(String authToken) throws DataAccessException;
+    void deleteAuth(String authToken) throws DataAccessException, UnauthorizedException;
 
     void deleteAuths() throws DataAccessException;
 }
