@@ -12,7 +12,6 @@ import responses.LoginResponse;
 import service.UserService;
 
 public class LoginHandler {
-    // TODO: Fix error handling
     public static void handle(Context cxt, UserService userService) throws DataAccessException {
         try {
             Gson gson = new Gson();
