@@ -1,6 +1,7 @@
 package handler;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import exceptions.BadRequestException;
 import exceptions.GeneralException;
 import exceptions.UnauthorizedException;
@@ -12,7 +13,7 @@ import service.UserService;
 
 public class LoginHandler {
     // TODO: Fix error handling
-    public static void handle(Context cxt, UserService userService) throws Exception {
+    public static void handle(Context cxt, UserService userService) throws DataAccessException {
         try {
             Gson gson = new Gson();
             LoginRequest request = gson.fromJson(cxt.body(), LoginRequest.class);

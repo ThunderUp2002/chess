@@ -4,6 +4,7 @@ import dataaccess.*;
 import exceptions.BadRequestException;
 import exceptions.AlreadyTakenException;
 import exceptions.GeneralException;
+import exceptions.UnauthorizedException;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import responses.LoginResponse;
@@ -36,15 +37,19 @@ public class UserService {
         return new RegisterResponse(request.username(), authData.authToken());
     }
 
-    public LoginResponse login(LoginRequest request) throws Exception {
-        UserData userData = userDAO.getUser(request.username());
-        if (userData != null) {
-            if (Objects.equals(request.password(), userData.password())) {
-                AuthData authData = authDAO.createAuth(request.username());
-                return new LoginResponse(request.username(), authData.authToken());
-            }
+    public LoginResponse login(LoginRequest request) throws GeneralException, BadRequestException, UnauthorizedException, DataAccessException {
+        if (request.username() == null || request.password() == null) {
+            throw new BadRequestException("Error: bad request");
         }
-        throw new GeneralException("Error: something went wrong");
+        UserData userData = userDAO.getUser(request.username());
+        if (userData == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+        if (!Objects.equals(userData.password(), request.password())) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+        AuthData authData = authDAO.createAuth(request.username());
+        return new LoginResponse(request.username(), authData.authToken());
     }
 
     public void logout(String authToken) throws Exception {
