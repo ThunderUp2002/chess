@@ -84,7 +84,9 @@ public class ChessGame {
 
     private boolean isInCheckWithBoard(TeamColor teamColor, ChessBoard board) {
         ChessPosition kingPosition = findKingPosition(board, teamColor);
-        if (kingPosition == null) return false;
+        if (kingPosition == null) {
+            return false;
+        }
 
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
