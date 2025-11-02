@@ -94,16 +94,16 @@ public class ChessPiece {
         }
     }
 
-    public void checkLongMove(ChessBoard board, ChessPosition currentPosition, int row, int col, int horizontal, int vertical, Collection<ChessMove> possibleMoves) {
+    public void checkLongMove(ChessBoard board, ChessPosition currPos, int row, int col, int hor, int vert, Collection<ChessMove> possMoves) {
         while (inBounds(row, col)) {
             ChessPiece piece = board.getPiece(new ChessPosition(row, col));
             if (piece == null) {
-                possibleMoves.add(new ChessMove(currentPosition, new ChessPosition(row, col), null));
-                row = row + horizontal;
-                col = col + vertical;
+                possMoves.add(new ChessMove(currPos, new ChessPosition(row, col), null));
+                row = row + hor;
+                col = col + vert;
             }
             else if (piece.getTeamColor() != this.getTeamColor()) {
-                possibleMoves.add(new ChessMove(currentPosition, new ChessPosition(row, col), null));
+                possMoves.add(new ChessMove(currPos, new ChessPosition(row, col), null));
                 break;
             }
             else {
