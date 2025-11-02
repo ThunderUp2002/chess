@@ -210,20 +210,7 @@ public class ChessPiece {
     }
 
     public void attackWhiteMove(ChessBoard board, ChessPosition myPosition, int row, int col, Collection<ChessMove> possibleMoves) {
-        if (inBounds(row, col)) {
-            ChessPiece piece = board.getPiece(new ChessPosition(row, col));
-            if (piece != null) {
-                if (piece.getTeamColor() != this.getTeamColor() && row == 8) {
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), PieceType.QUEEN));
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), PieceType.ROOK));
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), PieceType.KNIGHT));
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), PieceType.BISHOP));
-                }
-                else if (piece.getTeamColor() != this.getTeamColor()) {
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), null));
-                }
-            }
-        }
+        attackMove(board, myPosition, row, col, 8, possibleMoves);
     }
 
     public void firstWhiteMove(ChessBoard board, ChessPosition myPosition, int row, int col, Collection<ChessMove> possibleMoves) {
@@ -261,20 +248,7 @@ public class ChessPiece {
     }
 
     public void attackBlackMove(ChessBoard board, ChessPosition myPosition, int row, int col, Collection<ChessMove> possibleMoves) {
-        if (inBounds(row, col)) {
-            ChessPiece piece = board.getPiece(new ChessPosition(row, col));
-            if (piece != null) {
-                if (piece.getTeamColor() != this.getTeamColor() && row == 1) {
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), PieceType.QUEEN));
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), PieceType.ROOK));
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), PieceType.KNIGHT));
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), PieceType.BISHOP));
-                }
-                else if (piece.getTeamColor() != this.getTeamColor()) {
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), null));
-                }
-            }
-        }
+        attackMove(board, myPosition, row, col, 1, possibleMoves);
     }
 
     public void firstBlackMove(ChessBoard board, ChessPosition myPosition, int row, int col, Collection<ChessMove> possibleMoves) {
@@ -284,6 +258,23 @@ public class ChessPiece {
                 ChessPiece secondPiece = board.getPiece(new ChessPosition(row - 2, col));
                 if (firstPiece == null && secondPiece == null) {
                     possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row - 2, col), null));
+                }
+            }
+        }
+    }
+
+    public void attackMove(ChessBoard board, ChessPosition myPosition, int row, int col, int promotionRow, Collection<ChessMove> possibleMoves) {
+        if (inBounds(row, col)) {
+            ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+            if (piece != null && piece.getTeamColor() != this.getTeamColor()) {
+                ChessPosition target = new ChessPosition(row, col);
+                if (row == promotionRow) {
+                    possibleMoves.add(new ChessMove(myPosition, target, PieceType.QUEEN));
+                    possibleMoves.add(new ChessMove(myPosition, target, PieceType.ROOK));
+                    possibleMoves.add(new ChessMove(myPosition, target, PieceType.KNIGHT));
+                    possibleMoves.add(new ChessMove(myPosition, target, PieceType.BISHOP));
+                } else {
+                    possibleMoves.add(new ChessMove(myPosition, target, null));
                 }
             }
         }
