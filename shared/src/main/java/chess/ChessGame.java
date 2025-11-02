@@ -69,22 +69,30 @@ public class ChessGame {
         }
     }
 
+    private boolean isEnemyPiece(ChessPiece piece, TeamColor teamColor) {
+        return piece != null && piece.getTeamColor() != teamColor;
+    }
+
+    private boolean threatensKing(ChessPiece piece, ChessBoard board, ChessPosition from, ChessPosition kingPosition) {
+        for (ChessMove move : piece.pieceMoves(board, from)) {
+            if (move.getEndPosition().equals(kingPosition)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean isInCheckWithBoard(TeamColor teamColor, ChessBoard board) {
         ChessPosition kingPosition = findKingPosition(board, teamColor);
-        if (kingPosition == null) {
-            return false;
-        }
+        if (kingPosition == null) return false;
+
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(position);
-                if (piece != null && piece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
-                    for (ChessMove move : moves) {
-                        if (move.getEndPosition().equals(kingPosition)) {
-                            return true;
-                        }
-                    }
+
+                if (isEnemyPiece(piece, teamColor) && threatensKing(piece, board, position, kingPosition)) {
+                    return true;
                 }
             }
         }
