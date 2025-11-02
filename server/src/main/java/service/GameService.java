@@ -54,17 +54,17 @@ public class GameService {
             throw new BadRequestException("Error: bad request");
         }
 
-        boolean is_white = "white".equalsIgnoreCase(request.playerColor());
-        boolean is_black = "black".equalsIgnoreCase(request.playerColor());
+        boolean isWhite = "white".equalsIgnoreCase(request.playerColor());
+        boolean isBlack = "black".equalsIgnoreCase(request.playerColor());
 
-        if (!is_white && !is_black) {
+        if (!isWhite && !isBlack) {
             throw new BadRequestException("Error: bad request");
         }
 
-        if (is_black && gameData.blackUsername() != null) {
+        if (isBlack && gameData.blackUsername() != null) {
             throw new AlreadyTakenException("Error: already taken");
         }
-        if (is_white && gameData.whiteUsername() != null) {
+        if (isWhite && gameData.whiteUsername() != null) {
             throw new AlreadyTakenException("Error: already taken");
         }
 
