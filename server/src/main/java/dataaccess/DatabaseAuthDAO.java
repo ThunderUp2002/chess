@@ -9,7 +9,7 @@ import java.util.UUID;
 public class DatabaseAuthDAO implements AuthDAO {
     private static final String createStatement =
             """
-            CREATE TABLE IF NOT EXISTS auth (
+            CREATE TABLE IF NOT EXISTS auths (
             authToken VARCHAR(256) PRIMARY KEY NOT NULL UNIQUE,
             username VARCHAR(256) NOT NULL
             )
@@ -28,7 +28,7 @@ public class DatabaseAuthDAO implements AuthDAO {
 
     @Override
     public AuthData createAuth(String username) throws DataAccessException {
-        var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
+        var statement = "INSERT INTO auths (authToken, username) VALUES (?, ?)";
         String authToken = UUID.randomUUID().toString();
         AuthData authData = new AuthData(authToken, username);
 
@@ -46,7 +46,7 @@ public class DatabaseAuthDAO implements AuthDAO {
 
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException, UnauthorizedException {
-        var statement = "SELECT authToken, username FROM auth WHERE authToken=?";
+        var statement = "SELECT authToken, username FROM auths WHERE authToken=?";
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.setString(1, authToken);
@@ -66,7 +66,7 @@ public class DatabaseAuthDAO implements AuthDAO {
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException, UnauthorizedException {
-        var statement = "DELETE FROM auth WHERE authToken=?";
+        var statement = "DELETE FROM auths WHERE authToken=?";
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.setString(1, authToken);
@@ -82,7 +82,7 @@ public class DatabaseAuthDAO implements AuthDAO {
 
     @Override
     public void deleteAuths() throws DataAccessException {
-        var statement = "TRUNCATE auth";
+        var statement = "TRUNCATE auths";
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
