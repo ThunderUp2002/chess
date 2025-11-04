@@ -3,7 +3,6 @@ package dataaccess;
 import exceptions.UnauthorizedException;
 import model.AuthData;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO {
@@ -19,13 +18,8 @@ public class MemoryAuthDAO implements AuthDAO {
     }
 
     @Override
-    public AuthData getAuth(String authToken) throws DataAccessException {
+    public AuthData getAuth(String authToken) throws DataAccessException, UnauthorizedException {
         return authTokens.get(authToken);
-    }
-
-    @Override
-    public Map<String, AuthData> getAllAuths() throws DataAccessException {
-        return authTokens;
     }
 
     @Override
