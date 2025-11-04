@@ -1,20 +1,80 @@
 package dataaccess;
 
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
+
+import java.sql.SQLException;
 
 public class DatabaseUserDAO implements UserDAO {
+    private static final String createStatement =
+            """
+            CREATE TABLE IF NOT EXISTS users (
+            username VARCHAR(256) PRIMARY KEY NOT NULL UNIQUE,
+            hashedPassword VARCHAR(256) NOT NULL,
+            email VARCHAR(256) NOT NULL
+            )
+            """;
+
+    public DatabaseUserDAO() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(createStatement)) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Error: database configuration failed");
+        }
+    }
+
     @Override
     public UserData createUser(UserData userData) throws DataAccessException {
-        return null;
+        String hashedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
+        var statement = "INSERT INTO users (username, hashedPassword, email) VALUES (?, ?, ?)";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, userData.username());
+                preparedStatement.setString(2, hashedPassword);
+                preparedStatement.setString(3, userData.email());
+                int updatedRows = preparedStatement.executeUpdate();
+                if (updatedRows == 0) {
+                    throw new DataAccessException("Error: database error");
+                }
+            }
+            return userData;
+        } catch (SQLException e) {
+            throw new DataAccessException("Error: database error");
+        }
     }
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        return null;
+        var statement = "SELECT username, password, email FROM users WHERE username=?";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, username);
+                try (var resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return new UserData(resultSet.getString("username"), resultSet.getString("password"), resultSet.getString("email"));
+                    }
+                    else {
+                        throw new DataAccessException("Error: database error");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Error: database error");
+        }
     }
 
     @Override
     public void deleteUsers() throws DataAccessException {
-
+        var statement = "TRUNCATE users";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Error: database error");
+        }
     }
 }
