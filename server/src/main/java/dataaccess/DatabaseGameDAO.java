@@ -50,9 +50,12 @@ public class DatabaseGameDAO implements GameDAO {
                 preparedStatement.setInt(1, gameID);
                 try (var resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
+                        String whiteUsername = resultSet.getString("whiteUsername");
+                        String blackUsername = resultSet.getString("blackUsername");
+                        String gameName = resultSet.getString("gameName");
                         var json = resultSet.getString("chessGame");
                         var chessGame = new Gson().fromJson(json, ChessGame.class);
-                        return new GameData(resultSet.getInt("gameID"), resultSet.getString("whiteUsername"), resultSet.getString("blackUsername"), resultSet.getString("gameName"), chessGame);
+                        return new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
                     }
                 }
             }
