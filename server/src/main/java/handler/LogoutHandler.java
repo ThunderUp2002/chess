@@ -1,8 +1,6 @@
 package handler;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
-import exceptions.GeneralException;
 import exceptions.UnauthorizedException;
 import io.javalin.http.Context;
 import responses.ErrorResponse;
