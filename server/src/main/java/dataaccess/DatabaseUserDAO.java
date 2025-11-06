@@ -48,22 +48,20 @@ public class DatabaseUserDAO implements UserDAO {
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        var statement = "SELECT username, password, email FROM users WHERE username=?";
+        var statement = "SELECT username, hashedPassword, email FROM users WHERE username=?";
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.setString(1, username);
                 try (var resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return new UserData(resultSet.getString("username"), resultSet.getString("password"), resultSet.getString("email"));
-                    }
-                    else {
-                        throw new DataAccessException("Error: database error");
+                        return new UserData(resultSet.getString("username"), resultSet.getString("hashedPassword"), resultSet.getString("email"));
                     }
                 }
             }
         } catch (SQLException e) {
             throw new DataAccessException("Error: database error");
         }
+        return null;
     }
 
     @Override
