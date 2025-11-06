@@ -5,6 +5,7 @@ import exceptions.BadRequestException;
 import exceptions.AlreadyTakenException;
 import exceptions.GeneralException;
 import exceptions.UnauthorizedException;
+import org.mindrot.jbcrypt.BCrypt;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import responses.LoginResponse;
@@ -45,7 +46,7 @@ public class UserService {
         if (userData == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
-        if (!Objects.equals(userData.password(), request.password())) {
+        if (!BCrypt.checkpw(request.password(), userData.password())) {
             throw new UnauthorizedException("Error: unauthorized");
         }
         AuthData authData = authDAO.createAuth(request.username());
