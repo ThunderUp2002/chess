@@ -61,14 +61,12 @@ public class DatabaseGameDAO implements GameDAO {
                         var chessGame = new Gson().fromJson(json, ChessGame.class);
                         return new GameData(resultSet.getInt("gameID"), resultSet.getString("whiteUsername"), resultSet.getString("blackUsername"), resultSet.getString("gameName"), chessGame);
                     }
-                    else {
-                        throw new DataAccessException("Error: database error");
-                    }
                 }
             }
         } catch (SQLException e) {
             throw new DataAccessException("Error: database error");
         }
+        return null;
     }
 
     @Override
