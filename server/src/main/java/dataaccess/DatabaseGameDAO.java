@@ -21,14 +21,7 @@ public class DatabaseGameDAO implements GameDAO {
             """;
 
     public DatabaseGameDAO() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(CREATE_STATEMENT)) {
-                preparedStatement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Error: database configuration failed");
-        }
+        DatabaseManager.initializeTable(CREATE_STATEMENT);
     }
 
     @Override
