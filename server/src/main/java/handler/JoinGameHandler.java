@@ -11,7 +11,7 @@ import service.GameService;
 
 public class JoinGameHandler {
 
-    public static void handle(Context cxt, GameService gameService) throws Exception {
+    public static void handle(Context cxt, GameService gameService) {
         try {
             String authToken = cxt.header("authorization");
             if (authToken == null || authToken.isEmpty()) {

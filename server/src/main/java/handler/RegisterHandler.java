@@ -12,7 +12,7 @@ import responses.RegisterResponse;
 
 public class RegisterHandler {
 
-    public static void handle(Context cxt, UserService userService) throws Exception {
+    public static void handle(Context cxt, UserService userService) {
         try {
             Gson gson = new Gson();
             RegisterRequest request = gson.fromJson(cxt.body(), RegisterRequest.class);

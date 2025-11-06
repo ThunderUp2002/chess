@@ -9,7 +9,7 @@ import responses.ErrorResponse;
 import service.UserService;
 
 public class LogoutHandler {
-    public static void handle(Context cxt, UserService userService) throws DataAccessException {
+    public static void handle(Context cxt, UserService userService) {
         try {
             String authToken = cxt.header("authorization");
             if (authToken == null || authToken.isEmpty()) {

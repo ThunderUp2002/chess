@@ -12,7 +12,7 @@ import service.GameService;
 
 public class CreateGameHandler {
 
-    public static void handle(Context cxt, GameService gameService) throws Exception {
+    public static void handle(Context cxt, GameService gameService) {
         try {
             String authToken = cxt.header("authorization");
             if (authToken == null || authToken.isEmpty()) {
@@ -27,7 +27,7 @@ public class CreateGameHandler {
             cxt.status(400).result(new Gson().toJson(new ErrorResponse("Error: bad request")));
         } catch (UnauthorizedException e) {
             cxt.status(401).result(new Gson().toJson(new ErrorResponse("Error: unauthorized")));
-        } catch (GeneralException e) {
+        } catch (Exception e) {
             cxt.status(500).result(new Gson().toJson(new ErrorResponse("Error: something went wrong")));
         }
     }

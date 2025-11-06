@@ -12,7 +12,7 @@ import service.GameService;
 import java.util.Collection;
 
 public class ListGamesHandler {
-    public static void handle(Context cxt, GameService gameService) throws Exception {
+    public static void handle(Context cxt, GameService gameService) {
         try {
             Gson gson = new Gson();
             String authToken = cxt.header("authorization");
@@ -20,7 +20,7 @@ public class ListGamesHandler {
             cxt.status(200).result(gson.toJson(new ListGamesResponse(games)));
         } catch (UnauthorizedException e) {
             cxt.status(401).result(new Gson().toJson(new ErrorResponse("Error: unauthorized")));
-        } catch (GeneralException e) {
+        } catch (Exception e) {
             cxt.status(500).result(new Gson().toJson(new ErrorResponse("Error: something went wrong")));
         }
     }

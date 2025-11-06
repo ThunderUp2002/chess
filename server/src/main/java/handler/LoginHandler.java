@@ -12,7 +12,7 @@ import responses.LoginResponse;
 import service.UserService;
 
 public class LoginHandler {
-    public static void handle(Context cxt, UserService userService) throws DataAccessException {
+    public static void handle(Context cxt, UserService userService) {
         try {
             Gson gson = new Gson();
             LoginRequest request = gson.fromJson(cxt.body(), LoginRequest.class);
@@ -23,7 +23,7 @@ public class LoginHandler {
             cxt.status(400).result(new Gson().toJson(new ErrorResponse("Error: bad request")));
         } catch (UnauthorizedException e) {
             cxt.status(401).result(new Gson().toJson(new ErrorResponse("Error: unauthorized")));
-        } catch (GeneralException e) {
+        } catch (Exception e) {
             cxt.status(500).result(new Gson().toJson(new ErrorResponse("Error: something went wrong")));
         }
     }
