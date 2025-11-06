@@ -6,7 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.sql.SQLException;
 
 public class DatabaseUserDAO implements UserDAO {
-    private static final String createStatement =
+    private static final String CREATE_STATEMENT =
             """
             CREATE TABLE IF NOT EXISTS users (
             username VARCHAR(256) PRIMARY KEY NOT NULL UNIQUE,
@@ -18,7 +18,7 @@ public class DatabaseUserDAO implements UserDAO {
     public DatabaseUserDAO() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(createStatement)) {
+            try (var preparedStatement = conn.prepareStatement(CREATE_STATEMENT)) {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {

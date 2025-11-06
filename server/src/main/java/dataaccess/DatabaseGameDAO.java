@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class DatabaseGameDAO implements GameDAO {
-    private static final String createStatement =
+    private static final String CREATE_STATEMENT =
             """
             CREATE TABLE IF NOT EXISTS games (
             gameID INT PRIMARY KEY NOT NULL UNIQUE,
@@ -23,7 +23,7 @@ public class DatabaseGameDAO implements GameDAO {
     public DatabaseGameDAO() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(createStatement)) {
+            try (var preparedStatement = conn.prepareStatement(CREATE_STATEMENT)) {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {

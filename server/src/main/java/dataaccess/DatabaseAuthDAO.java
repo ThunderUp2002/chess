@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class DatabaseAuthDAO implements AuthDAO {
-    private static final String createStatement =
+    private static final String CREATE_STATEMENT =
             """
             CREATE TABLE IF NOT EXISTS auths (
             authToken VARCHAR(256) PRIMARY KEY NOT NULL UNIQUE,
@@ -18,7 +18,7 @@ public class DatabaseAuthDAO implements AuthDAO {
     public DatabaseAuthDAO() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(createStatement)) {
+            try (var preparedStatement = conn.prepareStatement(CREATE_STATEMENT)) {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
