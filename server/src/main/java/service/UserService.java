@@ -3,7 +3,6 @@ package service;
 import dataaccess.*;
 import exceptions.BadRequestException;
 import exceptions.AlreadyTakenException;
-import exceptions.GeneralException;
 import exceptions.UnauthorizedException;
 import org.mindrot.jbcrypt.BCrypt;
 import requests.LoginRequest;
@@ -12,8 +11,6 @@ import responses.LoginResponse;
 import responses.RegisterResponse;
 import model.UserData;
 import model.AuthData;
-
-import java.util.Objects;
 
 public class UserService {
 
@@ -38,7 +35,7 @@ public class UserService {
         return new RegisterResponse(request.username(), authData.authToken());
     }
 
-    public LoginResponse login(LoginRequest request) throws GeneralException, BadRequestException, UnauthorizedException, DataAccessException {
+    public LoginResponse login(LoginRequest request) throws BadRequestException, UnauthorizedException, DataAccessException {
         if (request.username() == null || request.password() == null) {
             throw new BadRequestException("Error: bad request");
         }
