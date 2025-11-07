@@ -30,9 +30,7 @@ public class AuthDAOTests {
 
     @Test
     public void createAuthFailure() {
-        assertThrows(DataAccessException.class, () -> {
-            authDAO.createAuth(null);
-        });
+        assertThrows(DataAccessException.class, () -> authDAO.createAuth(null));
     }
 
     @Test
@@ -46,9 +44,7 @@ public class AuthDAOTests {
 
     @Test
     public void getAuthFailure() {
-        assertThrows(UnauthorizedException.class, () -> {
-            authDAO.getAuth(null);
-        });
+        assertThrows(UnauthorizedException.class, () -> authDAO.getAuth(null));
     }
 
     @Test
@@ -57,16 +53,12 @@ public class AuthDAOTests {
         AuthData authData = authDAO.createAuth(username);
         String authToken = authData.authToken();
         authDAO.deleteAuth(authToken);
-        assertThrows(UnauthorizedException.class, () -> {
-            authDAO.getAuth(authToken);
-        });
+        assertThrows(UnauthorizedException.class, () -> authDAO.getAuth(authToken));
     }
 
     @Test
     public void deleteAuthFailure() {
-        assertThrows(UnauthorizedException.class, () -> {
-            authDAO.deleteAuth(null);
-        });
+        assertThrows(UnauthorizedException.class, () -> authDAO.deleteAuth(null));
     }
 
     @Test
@@ -85,16 +77,10 @@ public class AuthDAOTests {
 
         authDAO.deleteAuths();
 
-        assertThrows(UnauthorizedException.class, () -> {
-            authDAO.getAuth(authToken1);
-        });
+        assertThrows(UnauthorizedException.class, () -> authDAO.getAuth(authToken1));
 
-        assertThrows(UnauthorizedException.class, () -> {
-            authDAO.getAuth(authToken2);
-        });
+        assertThrows(UnauthorizedException.class, () -> authDAO.getAuth(authToken2));
 
-        assertThrows(UnauthorizedException.class, () -> {
-            authDAO.getAuth(authToken3);
-        });
+        assertThrows(UnauthorizedException.class, () -> authDAO.getAuth(authToken3));
     }
 }
