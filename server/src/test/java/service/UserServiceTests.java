@@ -3,7 +3,6 @@ package service;
 import dataaccess.*;
 import exceptions.BadRequestException;
 import exceptions.UnauthorizedException;
-import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
