@@ -3,7 +3,6 @@ package ui;
 import model.GameData;
 import requests.CreateGameRequest;
 import requests.JoinGameRequest;
-import responses.CreateGameResponse;
 import server.ServerFacade;
 
 import java.util.*;
@@ -46,18 +45,17 @@ public class PostLoginUI {
         }
     }
 
-    public static CreateGameResponse createGame(ServerFacade facade, String authToken) {
+    public static void createGame(ServerFacade facade, String authToken) {
         System.out.print("Enter game name: ");
         String gameName = scanner.nextLine();
         if (gameName.isEmpty()) {
-            System.out.print("Game name cannot be empty. Please try again.");
-            return null;
+            System.out.println("Game name cannot be empty.");
+            return;
         }
         try {
-            return facade.createGame(new CreateGameRequest(gameName), authToken);
+            facade.createGame(new CreateGameRequest(gameName), authToken);
         } catch (Exception e) {
             System.out.println("Unable to create game");
-            return null;
         }
     }
 
@@ -96,7 +94,7 @@ public class PostLoginUI {
     public static void observeGame(ServerFacade facade, String authToken) {
         try {
             Collection<GameData> gamesList = listGames(facade, authToken);
-            System.out.println("Enter game number to observe: ");
+            System.out.print("Enter game number to observe: ");
             int gameNumber;
             try {
                 gameNumber = Integer.parseInt(scanner.nextLine().trim());
@@ -115,7 +113,9 @@ public class PostLoginUI {
             int gameID = gameIDMap.get(gameNumber);
             facade.joinGame(new JoinGameRequest(null, gameID), authToken);
         } catch (Exception e) {
-            System.out.println("Unable to join game");
+            if (e.getMessage().contains("400")) {
+                System.out.println("Invalid request");
+            }
         }
     }
 
