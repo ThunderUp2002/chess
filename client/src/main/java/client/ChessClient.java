@@ -61,9 +61,13 @@ public class ChessClient {
                 if (response != null) {
                     authToken = response.authToken();
                     state = State.LOGGED_IN;
+                    System.out.print(SET_TEXT_COLOR_GREEN);
                     System.out.println("Logged in successfully");
+                    System.out.print(RESET_TEXT_COLOR);
                 } else {
+                    System.out.print(SET_TEXT_COLOR_RED);
                     System.out.println("Login failed");
+                    System.out.print(RESET_TEXT_COLOR);
                 }
             }
             case "register" -> {
@@ -71,9 +75,13 @@ public class ChessClient {
                 if (response != null) {
                     authToken = response.authToken();
                     state = State.LOGGED_IN;
+                    System.out.print(SET_TEXT_COLOR_GREEN);
                     System.out.println("Registered successfully");
+                    System.out.print(RESET_TEXT_COLOR);
                 } else {
+                    System.out.print(SET_TEXT_COLOR_RED);
                     System.out.println("Registration failed");
+                    System.out.print(RESET_TEXT_COLOR);
                 }
             }
             default -> System.out.println("Unknown command. Type 'help' to see a list of available commands.");
@@ -90,7 +98,9 @@ public class ChessClient {
                 logout(facade, authToken);
                 authToken = null;
                 state = State.LOGGED_OUT;
+                System.out.print(SET_TEXT_COLOR_GREEN);
                 System.out.println("Logged out successfully");
+                System.out.print(RESET_TEXT_COLOR);
             }
             case "help" -> PostLoginUI.help();
             default -> System.out.println("Unknown command. Type 'help' to see a list of available commands.");
