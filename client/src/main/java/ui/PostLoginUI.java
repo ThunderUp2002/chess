@@ -7,17 +7,32 @@ import server.ServerFacade;
 
 import java.util.*;
 
+import static ui.EscapeSequences.*;
+
 public class PostLoginUI {
     private static final Scanner scanner = new Scanner(System.in);
     private static final Map<Integer, Integer> gameIDMap = new HashMap<>();
 
     public static void help() {
-        System.out.println("List: see a list of existing games");
-        System.out.println("Create: add a game to the games list");
-        System.out.println("Play: join an existing game as a player");
-        System.out.println("Observe: join an existing game as an observer");
-        System.out.println("Logout: log out the current user");
-        System.out.println("Help: see a list of possible actions");
+        System.out.println();
+        System.out.print(SET_TEXT_COLOR_BLUE + "CREATE:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" see a list of existing games");
+        System.out.print(SET_TEXT_COLOR_BLUE + "PLAY:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" join an existing game as a player");
+        System.out.print(SET_TEXT_COLOR_BLUE + "OBSERVE:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" join an existing game as an observer");
+        System.out.print(SET_TEXT_COLOR_BLUE + "LIST:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" see a list of existing games");
+        System.out.print(SET_TEXT_COLOR_BLUE + "HELP:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" see a list of possible actions");
+        System.out.print(SET_TEXT_COLOR_BLUE + "LOGOUT:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" log out the current user");
     }
 
     public static Collection<GameData> listGames(ServerFacade facade, String authToken) {
@@ -30,11 +45,11 @@ public class PostLoginUI {
 
             int counter = 1;
             for (GameData game : gamesList) {
-                System.out.printf("%d. Game: \"%s\" Players: %s (white) vs. %s (black)%n",
+                System.out.printf("%d. \"%s\" | %s (WHITE) vs. %s (BLACK)%n",
                         counter,
                         game.gameName(),
-                        game.whiteUsername() != null ? game.whiteUsername() : "empty",
-                        game.blackUsername() != null ? game.blackUsername() : "empty");
+                        game.whiteUsername() != null ? game.whiteUsername() : "<EMPTY SLOT>",
+                        game.blackUsername() != null ? game.blackUsername() : "<EMPTY SLOT>");
                 gameIDMap.put(counter, game.gameID());
                 counter++;
             }
@@ -46,7 +61,7 @@ public class PostLoginUI {
     }
 
     public static void createGame(ServerFacade facade, String authToken) {
-        System.out.print("Enter game name: ");
+        System.out.print("Enter game name (no spaces allowed): ");
         String gameName = scanner.nextLine();
         if (gameName.isEmpty()) {
             System.out.println("Game name cannot be empty.");

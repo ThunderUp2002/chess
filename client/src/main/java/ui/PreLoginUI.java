@@ -8,14 +8,25 @@ import server.ServerFacade;
 
 import java.util.Scanner;
 
+import static ui.EscapeSequences.*;
+
 public class PreLoginUI {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void help() {
-        System.out.println("Register: create an account");
-        System.out.println("Login: play chess");
-        System.out.println("Quit: exit the program");
-        System.out.println("Help: see a list of possible actions");
+        System.out.println();
+        System.out.print(SET_TEXT_COLOR_BLUE + "REGISTER:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" create an account");
+        System.out.print(SET_TEXT_COLOR_BLUE + "LOGIN:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" play chess");
+        System.out.print(SET_TEXT_COLOR_BLUE + "HELP:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" see a list of possible actions");
+        System.out.print(SET_TEXT_COLOR_BLUE + "QUIT:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" exit the program");
     }
 
     public static void quit() {
