@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Scanner;
 
 public class PostLoginUI {
-    public static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void help() {
         System.out.println("List games: see a list of existing games");
