@@ -9,7 +9,7 @@ import server.ServerFacade;
 import java.util.Scanner;
 
 public class PreLoginUI {
-    public static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void help() {
         System.out.println("Register: create an account");
@@ -51,7 +51,7 @@ public class PreLoginUI {
             System.out.print("Enter " + field + " for registration: ");
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) {
-                System.out.print(field + " cannot be blank. Please provide a valid " + field);
+                System.out.println(field + " cannot be blank. Please provide a valid " + field);
                 continue;
             }
             return input;
