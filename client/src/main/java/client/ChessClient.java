@@ -8,6 +8,7 @@ import ui.PreLoginUI;
 
 import java.util.Scanner;
 
+import static ui.EscapeSequences.*;
 import static ui.PreLoginUI.*;
 import static ui.PostLoginUI.*;
 
@@ -27,15 +28,21 @@ public class ChessClient {
     }
 
     public void run() {
-        System.out.println("Welcome to the chess application. Type 'help' to begin.");
+        System.out.println(SET_TEXT_BOLD + "Welcome to the chess program!");
+        System.out.print(RESET_TEXT_BOLD_FAINT);
+        handlePreLogin("help");
         while (true) {
             try {
                 if (state == State.LOGGED_OUT) {
-                    System.out.print("[LOGGED OUT] >>> ");
+                    System.out.println();
+                    System.out.print(SET_TEXT_ITALIC + "[LOGGED OUT] >>> ");
+                    System.out.print(RESET_TEXT_ITALIC);
                     String input = scanner.nextLine();
                     handlePreLogin(input);
                 } else {
-                    System.out.print("[LOGGED IN] >>> ");
+                    System.out.println();
+                    System.out.print(SET_TEXT_ITALIC + "[LOGGED IN] >>> ");
+                    System.out.print(RESET_TEXT_ITALIC);
                     String input = scanner.nextLine();
                     handlePostLogin(input);
                 }
