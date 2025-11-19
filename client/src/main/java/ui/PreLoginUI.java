@@ -62,11 +62,11 @@ public class PreLoginUI {
         try {
             return facade.register(new RegisterRequest(request.username(), request.password(), request.email()));
         } catch (Exception e) {
-            if (e.getMessage().contains("already taken")) {
+            if (e.getMessage().contains("403")) {
                 System.out.println("Username already taken. Please try again.");
                 return null;
             }
-            System.out.println("Unable to successfully register: " + e.getMessage());
+            System.out.println("Unable to successfully register");
             return null;
         }
     }
