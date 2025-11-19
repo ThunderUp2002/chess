@@ -13,10 +13,10 @@ public class PostLoginUI {
     private static final Map<Integer, Integer> gameIDMap = new HashMap<>();
 
     public static void help() {
-        System.out.println("List games: see a list of existing games");
-        System.out.println("Create game: add a game to the games list");
-        System.out.println("Play game: join an existing game as a player");
-        System.out.println("Observe game: join an existing game as an observer");
+        System.out.println("List: see a list of existing games");
+        System.out.println("Create: add a game to the games list");
+        System.out.println("Play: join an existing game as a player");
+        System.out.println("Observe: join an existing game as an observer");
         System.out.println("Logout: log out the current user");
         System.out.println("Help: see a list of possible actions");
     }
