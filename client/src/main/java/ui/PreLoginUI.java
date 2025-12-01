@@ -30,6 +30,7 @@ public class PreLoginUI {
     }
 
     public static void quit() {
+        System.out.println("Goodbye!");
         System.exit(0);
     }
 
