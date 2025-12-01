@@ -17,7 +17,7 @@ public class PostLoginUI {
         System.out.println();
         System.out.print(SET_TEXT_COLOR_BLUE + "CREATE:");
         System.out.print(RESET_TEXT_COLOR);
-        System.out.println(" see a list of existing games");
+        System.out.println(" add a game to the games list");
         System.out.print(SET_TEXT_COLOR_BLUE + "PLAY:");
         System.out.print(RESET_TEXT_COLOR);
         System.out.println(" join an existing game as a player");
@@ -55,13 +55,15 @@ public class PostLoginUI {
             }
             return gamesList;
         } catch (Exception e) {
+            System.out.print(SET_TEXT_COLOR_RED);
             System.out.println("Unable to list games");
+            System.out.print(RESET_TEXT_COLOR);
             return Collections.emptyList();
         }
     }
 
     public static void createGame(ServerFacade facade, String authToken) {
-        System.out.print("Enter game name (no spaces allowed): ");
+        System.out.print("Enter game name: ");
         String gameName = scanner.nextLine();
         if (gameName.isEmpty()) {
             System.out.println("Game name cannot be empty.");
@@ -69,8 +71,13 @@ public class PostLoginUI {
         }
         try {
             facade.createGame(new CreateGameRequest(gameName), authToken);
+            System.out.print(SET_TEXT_COLOR_GREEN);
+            System.out.printf("\"%s\" created successfully%n", gameName);
+            System.out.print(RESET_TEXT_COLOR);
         } catch (Exception e) {
+            System.out.print(SET_TEXT_COLOR_RED);
             System.out.println("Unable to create game");
+            System.out.print(RESET_TEXT_COLOR);
         }
     }
 
@@ -128,9 +135,7 @@ public class PostLoginUI {
             int gameID = gameIDMap.get(gameNumber);
             facade.joinGame(new JoinGameRequest(null, gameID), authToken);
         } catch (Exception e) {
-            if (e.getMessage().contains("400")) {
-                System.out.println("Invalid request");
-            }
+            System.out.println(e.getMessage());
         }
     }
 
