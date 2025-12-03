@@ -53,7 +53,9 @@ public class PreLoginUI {
         try {
             return facade.login(new LoginRequest(username, password));
         } catch (Exception e) {
+            System.out.print(SET_TEXT_COLOR_RED);
             System.out.println("Invalid username/password");
+            System.out.print(RESET_TEXT_COLOR);
             return null;
         }
     }
@@ -63,7 +65,9 @@ public class PreLoginUI {
             System.out.print("Enter " + field + " for registration: ");
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) {
+                System.out.print(SET_TEXT_COLOR_RED);
                 System.out.println(field + " cannot be blank. Please provide a valid " + field);
+                System.out.print(RESET_TEXT_COLOR);
                 continue;
             }
             return input;
@@ -74,11 +78,14 @@ public class PreLoginUI {
         try {
             return facade.register(new RegisterRequest(request.username(), request.password(), request.email()));
         } catch (Exception e) {
+            System.out.print(SET_TEXT_COLOR_RED);
             if (e.getMessage().contains("403")) {
                 System.out.println("Username already taken. Please try again.");
-                return null;
             }
-            System.out.println("Unable to successfully register");
+            else {
+                System.out.println("Unable to successfully register");
+            }
+            System.out.print(RESET_TEXT_COLOR);
             return null;
         }
     }
