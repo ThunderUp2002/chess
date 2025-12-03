@@ -34,12 +34,16 @@ public class ChessClient {
         while (true) {
             try {
                 if (state == State.LOGGED_OUT) {
+                    System.out.print(RESET_BG_COLOR);
+                    System.out.print(RESET_TEXT_COLOR);
                     System.out.println();
                     System.out.print(SET_TEXT_ITALIC + "[LOGGED OUT] >>> ");
                     System.out.print(RESET_TEXT_ITALIC);
                     String input = scanner.nextLine();
                     handlePreLogin(input);
                 } else {
+                    System.out.print(RESET_BG_COLOR);
+                    System.out.print(RESET_TEXT_COLOR);
                     System.out.println();
                     System.out.print(SET_TEXT_ITALIC + "[LOGGED IN] >>> ");
                     System.out.print(RESET_TEXT_ITALIC);
