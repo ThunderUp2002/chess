@@ -112,6 +112,9 @@ public class PostLoginUI {
         try {
             Collection<GameData> gamesList = listGames(facade, authToken);
             List<GameData> gamesArray = new ArrayList<>(gamesList);
+            if (gamesList.isEmpty()) {
+                return;
+            }
             System.out.print("Enter game number to play: ");
             int gameNumber;
             try {
@@ -201,6 +204,9 @@ public class PostLoginUI {
         try {
             Collection<GameData> gamesList = listGames(facade, authToken);
             List<GameData> gamesArray = new ArrayList<>(gamesList);
+            if (gamesList.isEmpty()) {
+                return;
+            }
             System.out.print("Enter game number to observe: ");
             int gameNumber;
             try {
