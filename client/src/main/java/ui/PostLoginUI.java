@@ -108,7 +108,7 @@ public class PostLoginUI {
         }
     }
 
-    public static void playGame(ServerFacade facade, String authToken, Scanner scanner) {
+    public static void playGame(ServerFacade facade, String authToken, String username, Scanner scanner) {
         try {
             Collection<GameData> gamesList = listGames(facade, authToken);
             List<GameData> gamesArray = new ArrayList<>(gamesList);
@@ -146,6 +146,18 @@ public class PostLoginUI {
             if (!color.equals("white") && !color.equals("black")) {
                 System.out.print(SET_TEXT_COLOR_RED);
                 System.out.println("Invalid color choice");
+                System.out.print(RESET_TEXT_COLOR);
+                return;
+            }
+            if (username.equals(selectedGame.whiteUsername()) && color.equals("black")) {
+                System.out.print(SET_TEXT_COLOR_RED);
+                System.out.println("You are already the white player in this game. Self-play is not allowed.");
+                System.out.print(RESET_TEXT_COLOR);
+                return;
+            }
+            if (username.equals(selectedGame.blackUsername()) && color.equals("white")) {
+                System.out.print(SET_TEXT_COLOR_RED);
+                System.out.println("You are already the black player in this game. Self-play is not allowed.");
                 System.out.print(RESET_TEXT_COLOR);
                 return;
             }
