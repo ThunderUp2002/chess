@@ -10,7 +10,6 @@ import java.util.*;
 import static ui.EscapeSequences.*;
 
 public class PostLoginUI {
-    private static final Scanner scanner = new Scanner(System.in);
     private static final Map<Integer, Integer> gameIDMap = new HashMap<>();
 
     public static void help() {
@@ -68,7 +67,7 @@ public class PostLoginUI {
         }
     }
 
-    public static void createGame(ServerFacade facade, String authToken) {
+    public static void createGame(ServerFacade facade, String authToken, Scanner scanner) {
         System.out.print("Enter game name: ");
         String gameName = scanner.nextLine();
         if (gameName.isEmpty()) {
@@ -109,7 +108,7 @@ public class PostLoginUI {
         }
     }
 
-    public static void playGame(ServerFacade facade, String authToken) {
+    public static void playGame(ServerFacade facade, String authToken, Scanner scanner) {
         try {
             Collection<GameData> gamesList = listGames(facade, authToken);
             List<GameData> gamesArray = new ArrayList<>(gamesList);
@@ -171,7 +170,7 @@ public class PostLoginUI {
         }
     }
 
-    public static void observeGame(ServerFacade facade, String authToken) {
+    public static void observeGame(ServerFacade facade, String authToken, Scanner scanner) {
         try {
             Collection<GameData> gamesList = listGames(facade, authToken);
             System.out.print("Enter game number to observe: ");

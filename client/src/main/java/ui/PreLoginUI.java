@@ -11,7 +11,6 @@ import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
 public class PreLoginUI {
-    private static final Scanner scanner = new Scanner(System.in);
 
     public static void help() {
         System.out.println();
@@ -34,18 +33,18 @@ public class PreLoginUI {
         System.exit(0);
     }
 
-    public static RegisterResponse register(ServerFacade facade) {
+    public static RegisterResponse register(ServerFacade facade, Scanner scanner) {
         RegisterResponse response = null;
         while (response == null) {
-            String username = verifyValidInput("Username");
-            String password = verifyValidInput("Password");
-            String email = verifyValidInput("Email");
+            String username = verifyValidInput("Username", scanner);
+            String password = verifyValidInput("Password", scanner);
+            String email = verifyValidInput("Email", scanner);
             response = validateRegistration(facade, new RegisterRequest(username, password, email));
         }
         return response;
     }
 
-    public static LoginResponse login(ServerFacade facade) {
+    public static LoginResponse login(ServerFacade facade, Scanner scanner) {
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
         System.out.print("Enter password: ");
@@ -68,7 +67,7 @@ public class PreLoginUI {
         }
     }
 
-    private static String verifyValidInput(String field) {
+    private static String verifyValidInput(String field, Scanner scanner) {
         while (true) {
             System.out.print("Enter " + field.toLowerCase() + " for registration: ");
             String input = scanner.nextLine().trim();

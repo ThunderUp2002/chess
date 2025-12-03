@@ -61,7 +61,7 @@ public class ChessClient {
             case "help" -> PreLoginUI.help();
             case "quit" -> quit();
             case "login" -> {
-                LoginResponse response = login(facade);
+                LoginResponse response = login(facade, scanner);
                 if (response != null) {
                     authToken = response.authToken();
                     state = State.LOGGED_IN;
@@ -75,7 +75,7 @@ public class ChessClient {
                 }
             }
             case "register" -> {
-                RegisterResponse response = register(facade);
+                RegisterResponse response = register(facade, scanner);
                 if (response != null) {
                     authToken = response.authToken();
                     state = State.LOGGED_IN;
@@ -95,9 +95,9 @@ public class ChessClient {
     private void handlePostLogin(String command) throws Exception {
         switch(command.toLowerCase()) {
             case "list" -> listGames(facade, authToken);
-            case "create" -> createGame(facade, authToken);
-            case "play" -> playGame(facade, authToken);
-            case "observe" -> observeGame(facade, authToken);
+            case "create" -> createGame(facade, authToken, scanner);
+            case "play" -> playGame(facade, authToken, scanner);
+            case "observe" -> observeGame(facade, authToken, scanner);
             case "logout" -> {
                 logout(facade, authToken);
                 authToken = null;
