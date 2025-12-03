@@ -15,6 +15,7 @@ import static ui.PostLoginUI.*;
 public class ChessClient {
     private final ServerFacade facade;
     private String authToken;
+    private String username;
     private State state = State.LOGGED_OUT;
     private static final Scanner scanner = new Scanner(System.in);
 
@@ -64,6 +65,7 @@ public class ChessClient {
                 LoginResponse response = login(facade, scanner);
                 if (response != null) {
                     authToken = response.authToken();
+                    username = response.username();
                     state = State.LOGGED_IN;
                     System.out.print(SET_TEXT_COLOR_GREEN);
                     System.out.println("Logged in successfully");
@@ -78,6 +80,7 @@ public class ChessClient {
                 RegisterResponse response = register(facade, scanner);
                 if (response != null) {
                     authToken = response.authToken();
+                    username = response.username();
                     state = State.LOGGED_IN;
                     System.out.print(SET_TEXT_COLOR_GREEN);
                     System.out.println("Registered successfully");
@@ -96,11 +99,12 @@ public class ChessClient {
         switch(command.toLowerCase()) {
             case "list" -> listGames(facade, authToken);
             case "create" -> createGame(facade, authToken, scanner);
-            case "play" -> playGame(facade, authToken, scanner);
+            case "play" -> playGame(facade, authToken, username, scanner);
             case "observe" -> observeGame(facade, authToken, scanner);
             case "logout" -> {
                 logout(facade, authToken);
                 authToken = null;
+                username = null;
                 state = State.LOGGED_OUT;
                 System.out.print(SET_TEXT_COLOR_GREEN);
                 System.out.println("Logged out successfully");
