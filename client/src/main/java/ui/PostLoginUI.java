@@ -37,6 +37,7 @@ public class PostLoginUI {
 
     public static Collection<GameData> listGames(ServerFacade facade, String authToken) {
         try {
+            gameIDMap.clear();
             Collection<GameData> gamesList = facade.listGames(authToken);
             if (gamesList.isEmpty()) {
                 System.out.println("There are currently no active games.");
@@ -56,7 +57,12 @@ public class PostLoginUI {
             return gamesList;
         } catch (Exception e) {
             System.out.print(SET_TEXT_COLOR_RED);
-            System.out.println("Unable to list games");
+            if (e.getMessage().contains("401")) {
+                System.out.println("Unauthorized to perform this action");
+            }
+            else {
+                System.out.println("Unable to list games");
+            }
             System.out.print(RESET_TEXT_COLOR);
             return Collections.emptyList();
         }
@@ -66,7 +72,9 @@ public class PostLoginUI {
         System.out.print("Enter game name: ");
         String gameName = scanner.nextLine();
         if (gameName.isEmpty()) {
+            System.out.print(SET_TEXT_COLOR_RED);
             System.out.println("Game name cannot be empty.");
+            System.out.print(RESET_TEXT_COLOR);
             return;
         }
         try {
@@ -76,7 +84,27 @@ public class PostLoginUI {
             System.out.print(RESET_TEXT_COLOR);
         } catch (Exception e) {
             System.out.print(SET_TEXT_COLOR_RED);
-            System.out.println("Unable to create game");
+            if (e.getMessage().contains("400")) {
+                System.out.println("Invalid request");
+            }
+            if (e.getMessage().contains("401")) {
+                System.out.println("Unauthorized to perform this action");
+            }
+            else {
+                System.out.println("Unable to create game");
+            }
+            System.out.print(RESET_TEXT_COLOR);
+        }
+    }
+
+    private static void displayGame(String color) {
+        try {
+            boolean whiteView = color.equals("white");
+            GameplayUI gameplayUI = new GameplayUI(whiteView);
+            gameplayUI.run();
+        } catch (Exception e) {
+            System.out.print(SET_TEXT_COLOR_RED);
+            System.out.println("Error displaying game");
             System.out.print(RESET_TEXT_COLOR);
         }
     }
@@ -84,32 +112,62 @@ public class PostLoginUI {
     public static void playGame(ServerFacade facade, String authToken) {
         try {
             Collection<GameData> gamesList = listGames(facade, authToken);
+            List<GameData> gamesArray = new ArrayList<>(gamesList);
             System.out.print("Enter game number to play: ");
             int gameNumber;
             try {
                 gameNumber = Integer.parseInt(scanner.nextLine().trim());
                 if (gameNumber < 1 || gameNumber > gamesList.size()) {
+                    System.out.print(SET_TEXT_COLOR_RED);
                     System.out.println("Game number not available");
+                    System.out.print(RESET_TEXT_COLOR);
                     return;
                 }
             } catch (NumberFormatException e) {
+                System.out.print(SET_TEXT_COLOR_RED);
                 System.out.println("Invalid number");
+                System.out.print(RESET_TEXT_COLOR);
                 return;
             }
             if (!gameIDMap.containsKey(gameNumber)) {
+                System.out.print(SET_TEXT_COLOR_RED);
                 System.out.println("Could not find game number");
+                System.out.print(RESET_TEXT_COLOR);
+                return;
+            }
+            GameData selectedGame = gamesArray.get(gameNumber - 1);
+            if (selectedGame.blackUsername() != null && selectedGame.whiteUsername() != null) {
+                System.out.print(SET_TEXT_COLOR_RED);
+                System.out.println("The selected game is full. You may observe this game or select another game with an empty slot.");
+                System.out.print(RESET_TEXT_COLOR);
                 return;
             }
             System.out.print("Enter desired color (WHITE/BLACK): ");
             String color = scanner.nextLine().trim().toLowerCase();
             if (!color.equals("white") && !color.equals("black")) {
+                System.out.print(SET_TEXT_COLOR_RED);
                 System.out.println("Invalid color choice");
+                System.out.print(RESET_TEXT_COLOR);
                 return;
             }
             int gameID = gameIDMap.get(gameNumber);
             facade.joinGame(new JoinGameRequest(color, gameID), authToken);
+            displayGame(color);
         } catch (Exception e) {
-            System.out.println("Unable to join game");
+            System.out.print(SET_TEXT_COLOR_RED);
+            if (e.getMessage().contains("400")) {
+                System.out.println("Invalid request");
+            }
+            if (e.getMessage().contains("401")) {
+                System.out.println("Unauthorized to perform this action");
+            }
+            if (e.getMessage().contains("403")) {
+                System.out.println("Slot already taken. Please try again.");
+            }
+            else {
+                System.out.println("Unable to join game");
+            }
+            System.out.print(RESET_TEXT_COLOR);
         }
     }
 
@@ -121,29 +179,33 @@ public class PostLoginUI {
             try {
                 gameNumber = Integer.parseInt(scanner.nextLine().trim());
                 if (gameNumber < 1 || gameNumber > gamesList.size()) {
+                    System.out.print(SET_TEXT_COLOR_RED);
                     System.out.println("Game number not available");
+                    System.out.print(RESET_TEXT_COLOR);
                     return;
                 }
             } catch (NumberFormatException e) {
+                System.out.print(SET_TEXT_COLOR_RED);
                 System.out.println("Invalid number");
+                System.out.print(RESET_TEXT_COLOR);
                 return;
             }
             if (!gameIDMap.containsKey(gameNumber)) {
+                System.out.print(SET_TEXT_COLOR_RED);
                 System.out.println("Could not find game number");
+                System.out.print(RESET_TEXT_COLOR);
                 return;
             }
             int gameID = gameIDMap.get(gameNumber);
-            facade.joinGame(new JoinGameRequest(null, gameID), authToken);
+            displayGame("white");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.print(SET_TEXT_COLOR_RED);
+            System.out.println("Unable to observe game");
+            System.out.print(RESET_TEXT_COLOR);
         }
     }
 
     public static void logout(ServerFacade facade, String authToken) throws Exception {
         facade.logout(authToken);
-    }
-
-    private static boolean isGameFull(GameData game) {
-        return game.whiteUsername() != null && game.blackUsername() != null;
     }
 }
