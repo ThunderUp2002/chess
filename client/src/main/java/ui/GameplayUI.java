@@ -3,6 +3,7 @@ package ui;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import model.GameData;
 
 import static ui.EscapeSequences.*;
 
@@ -10,8 +11,8 @@ public class GameplayUI {
     private final ChessGame game;
     private final boolean isWhitePlayer;
 
-    public GameplayUI(boolean isWhitePlayer) {
-        this.game = new ChessGame();
+    public GameplayUI(GameData gameData, boolean isWhitePlayer) {
+        this.game = gameData.game();
         this.isWhitePlayer = isWhitePlayer;
     }
 

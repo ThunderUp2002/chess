@@ -96,10 +96,10 @@ public class PostLoginUI {
         }
     }
 
-    private static void displayGame(String color) {
+    private static void displayGame(GameData gameData, String color) {
         try {
             boolean whiteView = color.equals("white");
-            GameplayUI gameplayUI = new GameplayUI(whiteView);
+            GameplayUI gameplayUI = new GameplayUI(gameData, whiteView);
             gameplayUI.run();
         } catch (Exception e) {
             System.out.print(SET_TEXT_COLOR_RED);
@@ -151,7 +151,7 @@ public class PostLoginUI {
             }
             int gameID = gameIDMap.get(gameNumber);
             facade.joinGame(new JoinGameRequest(color, gameID), authToken);
-            displayGame(color);
+            displayGame(selectedGame, color);
         } catch (Exception e) {
             System.out.print(SET_TEXT_COLOR_RED);
             if (e.getMessage().contains("400")) {
@@ -173,6 +173,7 @@ public class PostLoginUI {
     public static void observeGame(ServerFacade facade, String authToken, Scanner scanner) {
         try {
             Collection<GameData> gamesList = listGames(facade, authToken);
+            List<GameData> gamesArray = new ArrayList<>(gamesList);
             System.out.print("Enter game number to observe: ");
             int gameNumber;
             try {
@@ -195,8 +196,9 @@ public class PostLoginUI {
                 System.out.print(RESET_TEXT_COLOR);
                 return;
             }
+            GameData selectedGame = gamesArray.get(gameNumber - 1);
             int gameID = gameIDMap.get(gameNumber);
-            displayGame("white");
+            displayGame(selectedGame,"white");
         } catch (Exception e) {
             System.out.print(SET_TEXT_COLOR_RED);
             System.out.println("Unable to observe game");
