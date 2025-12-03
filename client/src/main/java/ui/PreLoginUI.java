@@ -70,11 +70,11 @@ public class PreLoginUI {
 
     private static String verifyValidInput(String field) {
         while (true) {
-            System.out.print("Enter " + field + " for registration: ");
+            System.out.print("Enter " + field.toLowerCase() + " for registration: ");
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) {
                 System.out.print(SET_TEXT_COLOR_RED);
-                System.out.println(field + " cannot be blank. Please provide a valid " + field);
+                System.out.println(field + " cannot be blank. Please provide a valid " + field.toLowerCase() + ".");
                 System.out.print(RESET_TEXT_COLOR);
                 continue;
             }
