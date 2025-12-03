@@ -54,6 +54,8 @@ public class GameService {
             throw new BadRequestException("Error: bad request");
         }
 
+        AuthData authData = authDAO.getAuth(authToken);
+        String username = authData.username();
         boolean isWhite = "white".equalsIgnoreCase(request.playerColor());
         boolean isBlack = "black".equalsIgnoreCase(request.playerColor());
 
@@ -61,15 +63,18 @@ public class GameService {
             throw new BadRequestException("Error: bad request");
         }
 
-        if (isBlack && gameData.blackUsername() != null) {
-            throw new AlreadyTakenException("Error: already taken");
-        }
-        if (isWhite && gameData.whiteUsername() != null) {
-            throw new AlreadyTakenException("Error: already taken");
+        if (isWhite) {
+            if (gameData.whiteUsername() != null && !gameData.whiteUsername().equals(username)) {
+                throw new AlreadyTakenException("Error: already taken");
+            }
         }
 
-        AuthData authData = authDAO.getAuth(authToken);
-        String username = authData.username();
+        if (isBlack) {
+            if (gameData.blackUsername() != null && !gameData.blackUsername().equals(username)) {
+                throw new AlreadyTakenException("Error: already taken");
+            }
+        }
+
         gameDAO.updateGame(request.playerColor(), request.gameID(), username);
     }
 }

@@ -136,10 +136,12 @@ public class PostLoginUI {
             }
             GameData selectedGame = gamesArray.get(gameNumber - 1);
             if (selectedGame.blackUsername() != null && selectedGame.whiteUsername() != null) {
-                System.out.print(SET_TEXT_COLOR_RED);
-                System.out.println("The selected game is full. You may observe this game or select another game with an empty slot.");
-                System.out.print(RESET_TEXT_COLOR);
-                return;
+                if (!selectedGame.whiteUsername().equals(username) && !selectedGame.blackUsername().equals(username)) {
+                    System.out.print(SET_TEXT_COLOR_RED);
+                    System.out.println("The selected game is full. You may observe this game or select another game with an empty slot.");
+                    System.out.print(RESET_TEXT_COLOR);
+                    return;
+                }
             }
             System.out.print("Enter desired color (WHITE/BLACK): ");
             String color = scanner.nextLine().trim().toLowerCase();
@@ -161,6 +163,22 @@ public class PostLoginUI {
                 System.out.print(RESET_TEXT_COLOR);
                 return;
             }
+            if (color.equals("white")) {
+                if (selectedGame.whiteUsername() != null && !selectedGame.whiteUsername().equals(username)) {
+                    System.out.print(SET_TEXT_COLOR_RED);
+                    System.out.println("The white slot is already occupied by another user.");
+                    System.out.print(RESET_TEXT_COLOR);
+                    return;
+                }
+            }
+            if (color.equals("black")) {
+                if (selectedGame.blackUsername() != null && !selectedGame.blackUsername().equals(username)) {
+                    System.out.print(SET_TEXT_COLOR_RED);
+                    System.out.println("The black slot is already occupied by another user.");
+                    System.out.print(RESET_TEXT_COLOR);
+                    return;
+                }
+            }
             int gameID = gameIDMap.get(gameNumber);
             facade.joinGame(new JoinGameRequest(color, gameID), authToken);
             displayGame(selectedGame, color);
@@ -171,9 +189,6 @@ public class PostLoginUI {
             }
             if (e.getMessage().contains("401")) {
                 System.out.println("Unauthorized to perform this action");
-            }
-            if (e.getMessage().contains("403")) {
-                System.out.println("Slot already taken. Please try again.");
             }
             else {
                 System.out.println("Unable to join game");
