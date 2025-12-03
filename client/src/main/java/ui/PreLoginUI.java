@@ -54,7 +54,15 @@ public class PreLoginUI {
             return facade.login(new LoginRequest(username, password));
         } catch (Exception e) {
             System.out.print(SET_TEXT_COLOR_RED);
-            System.out.println("Invalid username/password");
+            if (e.getMessage().contains("400")) {
+                System.out.println("Invalid request. Please try again.");
+            }
+            if (e.getMessage().contains("401")) {
+                System.out.println("Invalid username/password");
+            }
+            else {
+                System.out.println("Unable to login");
+            }
             System.out.print(RESET_TEXT_COLOR);
             return null;
         }
@@ -79,11 +87,14 @@ public class PreLoginUI {
             return facade.register(new RegisterRequest(request.username(), request.password(), request.email()));
         } catch (Exception e) {
             System.out.print(SET_TEXT_COLOR_RED);
+            if (e.getMessage().contains("400")) {
+                System.out.println("Invalid request. Please try again.");
+            }
             if (e.getMessage().contains("403")) {
                 System.out.println("Username already taken. Please try again.");
             }
             else {
-                System.out.println("Unable to successfully register");
+                System.out.println("Unable to register");
             }
             System.out.print(RESET_TEXT_COLOR);
             return null;
