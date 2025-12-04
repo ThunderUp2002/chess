@@ -17,7 +17,7 @@ public class ChessClient {
     private String authToken;
     private String username;
     private State state = State.LOGGED_OUT;
-    private static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner SCANNER = new Scanner(System.in);
 
     public enum State {
         LOGGED_IN,
@@ -40,7 +40,7 @@ public class ChessClient {
                     System.out.println();
                     System.out.print(SET_TEXT_ITALIC + "[LOGGED OUT] >>> ");
                     System.out.print(RESET_TEXT_ITALIC);
-                    String input = scanner.nextLine();
+                    String input = SCANNER.nextLine();
                     handlePreLogin(input);
                 } else {
                     System.out.print(RESET_BG_COLOR);
@@ -48,7 +48,7 @@ public class ChessClient {
                     System.out.println();
                     System.out.print(SET_TEXT_ITALIC + "[LOGGED IN] >>> ");
                     System.out.print(RESET_TEXT_ITALIC);
-                    String input = scanner.nextLine();
+                    String input = SCANNER.nextLine();
                     handlePostLogin(input);
                 }
             } catch (Exception e) {
@@ -62,7 +62,7 @@ public class ChessClient {
             case "help" -> PreLoginUI.help();
             case "quit" -> quit();
             case "login" -> {
-                LoginResponse response = login(facade, scanner);
+                LoginResponse response = login(facade, SCANNER);
                 if (response != null) {
                     authToken = response.authToken();
                     username = response.username();
@@ -77,7 +77,7 @@ public class ChessClient {
                 }
             }
             case "register" -> {
-                RegisterResponse response = register(facade, scanner);
+                RegisterResponse response = register(facade, SCANNER);
                 if (response != null) {
                     authToken = response.authToken();
                     username = response.username();
@@ -98,9 +98,9 @@ public class ChessClient {
     private void handlePostLogin(String command) throws Exception {
         switch(command.toLowerCase()) {
             case "list" -> listGames(facade, authToken);
-            case "create" -> createGame(facade, authToken, scanner);
-            case "play" -> playGame(facade, authToken, username, scanner);
-            case "observe" -> observeGame(facade, authToken, scanner);
+            case "create" -> createGame(facade, authToken, SCANNER);
+            case "play" -> playGame(facade, authToken, username, SCANNER);
+            case "observe" -> observeGame(facade, authToken, SCANNER);
             case "logout" -> {
                 logout(facade, authToken);
                 authToken = null;
