@@ -10,7 +10,7 @@ import java.util.*;
 import static ui.EscapeSequences.*;
 
 public class PostLoginUI {
-    private static final Map<Integer, Integer> gameIDMap = new HashMap<>();
+    private static final Map<Integer, Integer> GAME_ID_MAP = new HashMap<>();
 
     public static void help() {
         System.out.println();
@@ -36,7 +36,7 @@ public class PostLoginUI {
 
     public static Collection<GameData> listGames(ServerFacade facade, String authToken) {
         try {
-            gameIDMap.clear();
+            GAME_ID_MAP.clear();
             Collection<GameData> gamesList = facade.listGames(authToken);
             if (gamesList.isEmpty()) {
                 System.out.println("There are currently no active games.");
@@ -50,7 +50,7 @@ public class PostLoginUI {
                         game.gameName(),
                         game.whiteUsername() != null ? game.whiteUsername() : "<EMPTY SLOT>",
                         game.blackUsername() != null ? game.blackUsername() : "<EMPTY SLOT>");
-                gameIDMap.put(counter, game.gameID());
+                GAME_ID_MAP.put(counter, game.gameID());
                 counter++;
             }
             return gamesList;
@@ -131,7 +131,7 @@ public class PostLoginUI {
                 System.out.print(RESET_TEXT_COLOR);
                 return;
             }
-            if (!gameIDMap.containsKey(gameNumber)) {
+            if (!GAME_ID_MAP.containsKey(gameNumber)) {
                 System.out.print(SET_TEXT_COLOR_RED);
                 System.out.println("Could not find game number");
                 System.out.print(RESET_TEXT_COLOR);
@@ -182,7 +182,7 @@ public class PostLoginUI {
                     return;
                 }
             }
-            int gameID = gameIDMap.get(gameNumber);
+            int gameID = GAME_ID_MAP.get(gameNumber);
             facade.joinGame(new JoinGameRequest(color, gameID), authToken);
             displayGame(selectedGame, color);
         } catch (Exception e) {
@@ -223,14 +223,14 @@ public class PostLoginUI {
                 System.out.print(RESET_TEXT_COLOR);
                 return;
             }
-            if (!gameIDMap.containsKey(gameNumber)) {
+            if (!GAME_ID_MAP.containsKey(gameNumber)) {
                 System.out.print(SET_TEXT_COLOR_RED);
                 System.out.println("Could not find game number");
                 System.out.print(RESET_TEXT_COLOR);
                 return;
             }
             GameData selectedGame = gamesArray.get(gameNumber - 1);
-            int gameID = gameIDMap.get(gameNumber);
+            int gameID = GAME_ID_MAP.get(gameNumber);
             displayGame(selectedGame,"white");
         } catch (Exception e) {
             System.out.print(SET_TEXT_COLOR_RED);
