@@ -108,36 +108,50 @@ public class PostLoginUI {
         }
     }
 
+    private static Map.Entry<GameData, Integer> selectGame(ServerFacade facade, String authToken, Scanner scanner, String actionLabel) {
+        Collection<GameData> gamesList = listGames(facade, authToken);
+        List<GameData> gamesArray = new ArrayList<>(gamesList);
+
+        if (gamesList.isEmpty()) {
+            return null;
+        }
+        System.out.print("Enter game number to " + actionLabel + ": ");
+        int gameNumber;
+        try {
+            gameNumber = Integer.parseInt(scanner.nextLine().trim());
+            if (gameNumber < 1 || gameNumber > gamesList.size()) {
+                printError("Game number not available");
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            printError("Invalid number");
+            return null;
+        }
+        if (!GAME_ID_MAP.containsKey(gameNumber)) {
+            printError("Could not find game number");
+            return null;
+        }
+
+        GameData selectedGame = gamesArray.get(gameNumber - 1);
+        return Map.entry(selectedGame, gameNumber);
+    }
+
+    private static void printError(String message) {
+        System.out.print(SET_TEXT_COLOR_RED);
+        System.out.println(message);
+        System.out.print(RESET_TEXT_COLOR);
+    }
+
     public static void playGame(ServerFacade facade, String authToken, String username, Scanner scanner) {
         try {
-            Collection<GameData> gamesList = listGames(facade, authToken);
-            List<GameData> gamesArray = new ArrayList<>(gamesList);
-            if (gamesList.isEmpty()) {
+            Map.Entry<GameData, Integer> selection = selectGame(facade, authToken, scanner, "play");
+            if (selection == null) {
                 return;
             }
-            System.out.print("Enter game number to play: ");
-            int gameNumber;
-            try {
-                gameNumber = Integer.parseInt(scanner.nextLine().trim());
-                if (gameNumber < 1 || gameNumber > gamesList.size()) {
-                    System.out.print(SET_TEXT_COLOR_RED);
-                    System.out.println("Game number not available");
-                    System.out.print(RESET_TEXT_COLOR);
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                System.out.print(SET_TEXT_COLOR_RED);
-                System.out.println("Invalid number");
-                System.out.print(RESET_TEXT_COLOR);
-                return;
-            }
-            if (!GAME_ID_MAP.containsKey(gameNumber)) {
-                System.out.print(SET_TEXT_COLOR_RED);
-                System.out.println("Could not find game number");
-                System.out.print(RESET_TEXT_COLOR);
-                return;
-            }
-            GameData selectedGame = gamesArray.get(gameNumber - 1);
+
+            GameData selectedGame = selection.getKey();
+            int gameNumber = selection.getValue();
+
             if (selectedGame.blackUsername() != null && selectedGame.whiteUsername() != null) {
                 if (!selectedGame.whiteUsername().equals(username) && !selectedGame.blackUsername().equals(username)) {
                     System.out.print(SET_TEXT_COLOR_RED);
@@ -202,40 +216,18 @@ public class PostLoginUI {
 
     public static void observeGame(ServerFacade facade, String authToken, Scanner scanner) {
         try {
-            Collection<GameData> gamesList = listGames(facade, authToken);
-            List<GameData> gamesArray = new ArrayList<>(gamesList);
-            if (gamesList.isEmpty()) {
+            Map.Entry<GameData, Integer> selection = selectGame(facade, authToken, scanner, "observe");
+            if (selection == null) {
                 return;
             }
-            System.out.print("Enter game number to observe: ");
-            int gameNumber;
-            try {
-                gameNumber = Integer.parseInt(scanner.nextLine().trim());
-                if (gameNumber < 1 || gameNumber > gamesList.size()) {
-                    System.out.print(SET_TEXT_COLOR_RED);
-                    System.out.println("Game number not available");
-                    System.out.print(RESET_TEXT_COLOR);
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                System.out.print(SET_TEXT_COLOR_RED);
-                System.out.println("Invalid number");
-                System.out.print(RESET_TEXT_COLOR);
-                return;
-            }
-            if (!GAME_ID_MAP.containsKey(gameNumber)) {
-                System.out.print(SET_TEXT_COLOR_RED);
-                System.out.println("Could not find game number");
-                System.out.print(RESET_TEXT_COLOR);
-                return;
-            }
-            GameData selectedGame = gamesArray.get(gameNumber - 1);
+
+            GameData selectedGame = selection.getKey();
+            int gameNumber = selection.getValue();
+
             int gameID = GAME_ID_MAP.get(gameNumber);
-            displayGame(selectedGame,"white");
+            displayGame(selectedGame, "white");
         } catch (Exception e) {
-            System.out.print(SET_TEXT_COLOR_RED);
-            System.out.println("Unable to observe game");
-            System.out.print(RESET_TEXT_COLOR);
+            printError("Unable to observe game");
         }
     }
 
