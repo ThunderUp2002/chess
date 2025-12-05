@@ -14,6 +14,7 @@ public class ChessGame {
 
     private TeamColor teamTurn = TeamColor.WHITE;
     private ChessBoard board = new ChessBoard();
+    private boolean gameOver = false;
 
     public ChessGame() {
         board.resetBoard();
@@ -253,5 +254,13 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    public void endGame() {
+        gameOver = true;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 }
