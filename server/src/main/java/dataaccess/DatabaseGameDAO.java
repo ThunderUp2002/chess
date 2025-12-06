@@ -66,26 +66,20 @@ public class DatabaseGameDAO implements GameDAO {
     }
 
     @Override
-    public void updateGame(String playerColor, int gameID, String username) throws DataAccessException {
-        GameData gameData = getGame(gameID);
-        var statement = "DELETE FROM games WHERE gameID=?";
+    public void updateGame(GameData updatedGameData) throws DataAccessException {
+        var statement = "UPDATE games SET whiteUsername=?, blackUsername=?, gameName=?, chessGame=? WHERE gameID=?";
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(statement)) {
-                preparedStatement.setInt(1, gameID);
+                preparedStatement.setString(1, updatedGameData.whiteUsername());
+                preparedStatement.setString(2, updatedGameData.blackUsername());
+                preparedStatement.setString(3, updatedGameData.gameName());
+                preparedStatement.setString(4, new Gson().toJson(updatedGameData.game()));
+                preparedStatement.setInt(5, updatedGameData.gameID());
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
             throw new DataAccessException("Error: database error");
         }
-        ChessGame chessGame = new ChessGame();
-        GameData newGameData;
-        if (playerColor.equalsIgnoreCase("white")) {
-            newGameData = new GameData(gameID, username, gameData.blackUsername(), gameData.gameName(), chessGame);
-        }
-        else {
-            newGameData = new GameData(gameID, gameData.whiteUsername(), username, gameData.gameName(), chessGame);
-        }
-        createGame(newGameData);
     }
 
     @Override

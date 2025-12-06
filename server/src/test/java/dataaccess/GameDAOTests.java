@@ -65,14 +65,15 @@ public class GameDAOTests {
         ChessGame chessGame = new ChessGame();
         GameData gameData = new GameData(gameID, null, null, gameName, chessGame);
         gameDAO.createGame(gameData);
-        gameDAO.updateGame("white", gameID, "username");
-        GameData updatedGameData = gameDAO.getGame(1);
-        assertEquals("username", updatedGameData.whiteUsername());
+        GameData updatedGameData = new GameData(gameID, "username", null, gameName, chessGame);
+        gameDAO.updateGame(updatedGameData);
+        GameData newGameData = gameDAO.getGame(1);
+        assertEquals("username", newGameData.whiteUsername());
     }
 
     @Test
     public void updateGameFailure() {
-        assertThrows(NullPointerException.class, () -> gameDAO.updateGame("white", -1, "username"));
+        assertThrows(NullPointerException.class, () -> gameDAO.updateGame(null));
     }
 
     @Test
