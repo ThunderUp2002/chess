@@ -3,16 +3,17 @@ package server;
 import io.javalin.*;
 import io.javalin.http.Context;
 import handler.*;
+import server.websocket.WebSocketHandler;
 import service.*;
 import dataaccess.*;
 
 public class Server {
 
     private final Javalin javalin;
-
     private ClearService clearService;
     private GameService gameService;
     private UserService userService;
+    private WebSocketHandler webSocketHandler;
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
@@ -22,7 +23,12 @@ public class Server {
                 .get("/game", this::listGames)
                 .post("/game", this::createGame)
                 .put("/game", this::joinGame)
-                .delete("/db", this::clear);
+                .delete("/db", this::clear)
+                .ws("/ws", ws -> {
+                    ws.onConnect(webSocketHandler);
+                    ws.onMessage(webSocketHandler);
+                    ws.onClose(webSocketHandler);
+                });
     }
 
     public int run(int desiredPort) {
@@ -34,6 +40,7 @@ public class Server {
             this.clearService = new ClearService(authDAO, gameDAO, userDAO);
             this.gameService = new GameService(authDAO, gameDAO);
             this.userService = new UserService(authDAO, userDAO);
+            this.webSocketHandler = new WebSocketHandler(authDAO, gameDAO);
 
             javalin.start(desiredPort);
             return javalin.port();
