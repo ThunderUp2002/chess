@@ -35,10 +35,12 @@ public class GameplayUI {
                 String input = scanner.nextLine().trim().toLowerCase();
 
                 switch (input) {
-                    case "leave" -> {
-                        System.out.println("Leaving game...");
-                        return;
-                    }
+                    case "help" -> help();
+                    case "redraw" -> drawChessBoard();
+                    case "highlight" -> highlight();
+                    case "move" -> move();
+                    case "resign" -> resign();
+                    case "leave" -> leave();  // TODO: Ensure leave returns the user to PostLoginUI
                     default -> System.out.println("Unknown command. Type 'help' to see a list of available commands.");
                 }
             }
@@ -48,6 +50,45 @@ public class GameplayUI {
             System.out.println("Error running game");
             System.out.print(RESET_TEXT_COLOR);
         }
+    }
+
+    public static void help() {
+        System.out.println();
+        System.out.print(SET_TEXT_COLOR_BLUE + "HELP:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" see a list of possible actions");
+        System.out.print(SET_TEXT_COLOR_BLUE + "REDRAW:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" display the current state of the chess board");
+        System.out.print(SET_TEXT_COLOR_BLUE + "HIGHLIGHT:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" show legal moves for a piece");
+        System.out.print(SET_TEXT_COLOR_BLUE + "MOVE:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" move one of your pieces");
+        System.out.print(SET_TEXT_COLOR_BLUE + "RESIGN:");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" forfeit the game");
+        System.out.print(SET_TEXT_COLOR_BLUE + "LEAVE: ");
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println(" exit the game");
+    }
+
+    public static void highlight() {
+
+    }
+
+    public static void move() {
+
+    }
+
+    public static void resign() {
+
+    }
+
+    public static void leave() {
+        // TODO: Ensure leave returns the user to PostLoginUI
+        System.out.println("Leaving game...");
     }
 
     private void displayBoard() {
