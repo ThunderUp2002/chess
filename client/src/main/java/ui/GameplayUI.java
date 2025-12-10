@@ -153,12 +153,9 @@ public class GameplayUI implements NotificationHandler {
         ChessPosition endPos = constructChessPosition(endingPosition);
         ChessPiece.PieceType type = gameData.game().getBoard().getPiece(startPos).getPieceType();
         ChessMove move;
-        if (isWhitePlayer && endPos.getRow() == 8 && type == ChessPiece.PieceType.PAWN) {
-            System.out.print("Choose a piece to promote your pawn to (BISHOP/KNIGHT/ROOK/QUEEN): ");
-            String selection = SCANNER.nextLine().trim().toLowerCase();
-            move = new ChessMove(startPos, endPos, selectPromotionPiece(selection));
-        }
-        else if (!isWhitePlayer && endPos.getRow() == 1 && type == ChessPiece.PieceType.PAWN) {
+        boolean isPromotion = (isWhitePlayer && endPos.getRow() == 8 && type == ChessPiece.PieceType.PAWN) ||
+                (!isWhitePlayer && endPos.getRow() == 1 && type == ChessPiece.PieceType.PAWN);
+        if (isPromotion) {
             System.out.print("Choose a piece to promote your pawn to (BISHOP/KNIGHT/ROOK/QUEEN): ");
             String selection = SCANNER.nextLine().trim().toLowerCase();
             move = new ChessMove(startPos, endPos, selectPromotionPiece(selection));
