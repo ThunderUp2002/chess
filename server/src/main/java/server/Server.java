@@ -23,12 +23,7 @@ public class Server {
                 .get("/game", this::listGames)
                 .post("/game", this::createGame)
                 .put("/game", this::joinGame)
-                .delete("/db", this::clear)
-                .ws("/ws", ws -> {
-                    ws.onConnect(webSocketHandler);
-                    ws.onMessage(webSocketHandler);
-                    ws.onClose(webSocketHandler);
-                });
+                .delete("/db", this::clear);
     }
 
     public int run(int desiredPort) {
@@ -42,6 +37,11 @@ public class Server {
             this.userService = new UserService(authDAO, userDAO);
             this.webSocketHandler = new WebSocketHandler(authDAO, gameDAO);
 
+            javalin.ws("/ws", ws -> {
+                ws.onConnect(webSocketHandler);
+                ws.onMessage(webSocketHandler);
+                ws.onClose(webSocketHandler);
+            });
             javalin.start(desiredPort);
             return javalin.port();
         } catch (DataAccessException e) {
