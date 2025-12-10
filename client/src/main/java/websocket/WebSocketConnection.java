@@ -55,13 +55,11 @@ public class WebSocketConnection extends Endpoint {
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
-        System.out.println("Connected to WebSocket");
         this.session = session;
     }
 
     @Override
     public void onClose(Session session, CloseReason closeReason) {
-        System.out.println("WebSocket closed: " + closeReason.getReasonPhrase());
         this.session = null;
     }
 
