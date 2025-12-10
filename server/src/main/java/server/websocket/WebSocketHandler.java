@@ -134,8 +134,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         if (piece == null) {
             throw new Exception (String.format("There is no piece on %s", formatPosition(position)));
         }
-        boolean isWrongTeam = (isWhite && (game.getBoard().getPiece(command.getMove().getStartPosition()).getTeamColor()).equals(ChessGame.TeamColor.BLACK)) ||
-                (isBlack && (game.getBoard().getPiece(command.getMove().getStartPosition()).getTeamColor()).equals(ChessGame.TeamColor.WHITE));
+        ChessGame.TeamColor pieceColor = game.getBoard().getPiece(command.getMove().getStartPosition()).getTeamColor();
+        boolean isWrongTeam = (isWhite && pieceColor.equals(ChessGame.TeamColor.BLACK)) ||
+                (isBlack && pieceColor.equals(ChessGame.TeamColor.WHITE));
         if (isWrongTeam) {
             throw new Exception("You may not move the other player's pieces");
         }
@@ -151,7 +152,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         String pieceType = convertPieceType(game.getBoard().getPiece(command.getMove().getEndPosition()).getPieceType());
         String formattedStartPos = formatPosition(command.getMove().getStartPosition());
         String formattedEndPos = formatPosition(command.getMove().getEndPosition());
-        Notification moveNotification = new Notification(String.format("%s moved their %s from %s to %s", username, pieceType, formattedStartPos, formattedEndPos));
+        Notification moveNotification = new Notification(String.format("%s moved their %s from %s to %s",
+                username, pieceType, formattedStartPos, formattedEndPos));
         String moveNotificationJSON = new Gson().toJson(moveNotification);
         connectionManager.broadcastExclusion(gameID, authToken, moveNotificationJSON);
 
@@ -167,25 +169,29 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
         if (game.isInCheckmate(ChessGame.TeamColor.WHITE)) {
             endGame(gameData);
-            Notification checkmateNotification = new Notification(String.format("%s is in checkmate. %s has won the game!", gameData.whiteUsername(), gameData.blackUsername()));
+            Notification checkmateNotification = new Notification(String.format("%s is in checkmate. %s has won the game!",
+                    gameData.whiteUsername(), gameData.blackUsername()));
             String checkmateNotificationJSON = new Gson().toJson(checkmateNotification);
             connectionManager.broadcastAll(gameID, checkmateNotificationJSON);
         }
         if (game.isInCheckmate(ChessGame.TeamColor.BLACK)) {
             endGame(gameData);
-            Notification checkmateNotification = new Notification(String.format("%s is in checkmate. %s has won the game!", gameData.blackUsername(), gameData.whiteUsername()));
+            Notification checkmateNotification = new Notification(String.format("%s is in checkmate. %s has won the game!",
+                    gameData.blackUsername(), gameData.whiteUsername()));
             String checkmateNotificationJSON = new Gson().toJson(checkmateNotification);
             connectionManager.broadcastAll(gameID, checkmateNotificationJSON);
         }
         if (game.isInStalemate(ChessGame.TeamColor.WHITE)) {
             endGame(gameData);
-            Notification stalemateNotification = new Notification(String.format("%s has no remaining moves. The game has ended in a stalemate.", gameData.whiteUsername()));
+            Notification stalemateNotification = new Notification(String.format("%s has no remaining moves. The game has ended in a stalemate.",
+                    gameData.whiteUsername()));
             String stalemateNotificationJSON = new Gson().toJson(stalemateNotification);
             connectionManager.broadcastAll(gameID, stalemateNotificationJSON);
         }
         if (game.isInStalemate(ChessGame.TeamColor.BLACK)) {
             endGame(gameData);
-            Notification stalemateNotification = new Notification(String.format("%s has no remaining moves. The game has ended in a stalemate.", gameData.blackUsername()));
+            Notification stalemateNotification = new Notification(String.format("%s has no remaining moves. The game has ended in a stalemate.",
+                    gameData.blackUsername()));
             String stalemateNotificationJSON = new Gson().toJson(stalemateNotification);
             connectionManager.broadcastAll(gameID, stalemateNotificationJSON);
         }
@@ -210,7 +216,12 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void endGame(GameData gameData) throws Exception {
         gameData.game().endGame();
-        GameData endedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game());
+        int gameID = gameData.gameID();
+        String whiteUsername = gameData.whiteUsername();
+        String blackUsername = gameData.blackUsername();
+        String gameName = gameData.gameName();
+        ChessGame game = gameData.game();
+        GameData endedGame = new GameData(gameID, whiteUsername, blackUsername, gameName, game);
         gameDAO.updateGame(endedGame);
     }
 
