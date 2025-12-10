@@ -91,7 +91,7 @@ public class PostLoginUI {
                 System.out.println("Unauthorized to perform this action");
             }
             else {
-                System.out.println("Unable to create game: " + e.getMessage());
+                System.out.println("Unable to create game: server error");
             }
             System.out.print(RESET_TEXT_COLOR);
         }
