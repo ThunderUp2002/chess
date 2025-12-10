@@ -46,7 +46,6 @@ public class WebSocketConnection extends Endpoint {
                         default:
                             break;
                     }
-                    notificationHandler.notify(serverMessage);
                 }
             });
         } catch (Exception e) {
