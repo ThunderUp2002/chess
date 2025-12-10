@@ -5,6 +5,8 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import model.GameData;
 import websocket.NotificationHandler;
+import websocket.WebSocketConnection;
+import websocket.commands.UserGameCommand;
 import websocket.messages.Error;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
@@ -18,19 +20,25 @@ public class GameplayUI implements NotificationHandler {
     private ChessGame game;
     private final boolean isWhitePlayer;
     private boolean isPlaying = true;
+    private final String authToken;
+    private final GameData gameData;
+    private WebSocketConnection webSocketConnection;
+    private final static Scanner scanner = new Scanner(System.in);
 
-    public GameplayUI(GameData gameData, boolean isWhitePlayer) {
+    public GameplayUI(GameData gameData, boolean isWhitePlayer, String authToken, WebSocketConnection webSocketConnection) {
         this.game = gameData.game();
         this.isWhitePlayer = isWhitePlayer;
+        this.authToken = authToken;
+        this.gameData = gameData;
+        this.webSocketConnection = webSocketConnection;
     }
 
     public void run() {
         try {
             System.out.print(ERASE_SCREEN);
             System.out.println("Joining game...");
-            displayBoard();
-
-            Scanner scanner = new Scanner(System.in);
+            sendCommand(UserGameCommand.CommandType.CONNECT);
+            help();
 
             while (isPlaying) {
                 System.out.print(RESET_BG_COLOR);
@@ -53,7 +61,7 @@ public class GameplayUI implements NotificationHandler {
 
         } catch (Exception e) {
             System.out.print(SET_TEXT_COLOR_RED);
-            System.out.println("Error running game");
+            System.out.println("Error running game: " + e.getMessage());
             System.out.print(RESET_TEXT_COLOR);
         }
     }
@@ -89,11 +97,15 @@ public class GameplayUI implements NotificationHandler {
     }
 
     public void resign() {
-
+        System.out.println("Are you sure you would like to resign? (Y/N)");
+        String answer = scanner.nextLine().trim().toLowerCase();
+        if (answer.equals("y")) {
+            sendCommand(UserGameCommand.CommandType.RESIGN);
+        }
     }
 
     public void leave() {
-        System.out.println("Leaving game...");
+        sendCommand(UserGameCommand.CommandType.LEAVE);
         isPlaying = false;
     }
 
@@ -202,5 +214,14 @@ public class GameplayUI implements NotificationHandler {
                 System.out.println();
                 break;
         }
+    }
+
+    private void sendCommand(UserGameCommand.CommandType type) {
+        UserGameCommand command = new UserGameCommand(type, authToken, gameData.gameID());
+        webSocketConnection.sendCommand(command);
+    }
+
+    public void setWebSocketConnection(WebSocketConnection webSocketConnection) {
+        this.webSocketConnection = webSocketConnection;
     }
 }
