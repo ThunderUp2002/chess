@@ -4,13 +4,18 @@ import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import model.GameData;
+import websocket.NotificationHandler;
+import websocket.messages.Error;
+import websocket.messages.LoadGame;
+import websocket.messages.Notification;
+import websocket.messages.ServerMessage;
 
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
-public class GameplayUI {
-    private final ChessGame game;
+public class GameplayUI implements NotificationHandler {
+    private ChessGame game;
     private final boolean isWhitePlayer;
 
     public GameplayUI(GameData gameData, boolean isWhitePlayer) {
@@ -173,5 +178,28 @@ public class GameplayUI {
             case ROOK -> "R";
             case PAWN -> "P";
         };
+    }
+
+    @Override
+    public void notify(ServerMessage serverMessage) {
+        switch (serverMessage.getServerMessageType()) {
+            case LOAD_GAME:
+                LoadGame loadGame = (LoadGame) serverMessage;
+                this.game = loadGame.getGame().game();
+                displayBoard();
+                break;
+            case NOTIFICATION:
+                Notification notification = (Notification) serverMessage;
+                System.out.println();
+                System.out.println(notification.getMessage());
+                System.out.println();
+                break;
+            case ERROR:
+                Error error = (Error) serverMessage;
+                System.out.println();
+                System.out.println(error.getErrorMessage());
+                System.out.println();
+                break;
+        }
     }
 }
