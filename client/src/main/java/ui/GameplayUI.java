@@ -101,6 +101,7 @@ public class GameplayUI implements NotificationHandler {
             return;
         }
 
+        // TODO: Figure out why after moving a piece, highlight doesn't update and instead says there is no piece on the space the piece moved to (still highlights where the piece was previously)
         ChessPosition position = constructChessPosition(input);
         ChessPiece piece = gameData.game().getBoard().getPiece(position);
         if (piece == null) {
@@ -124,7 +125,9 @@ public class GameplayUI implements NotificationHandler {
         }
         if (!isWhitePlayer && gameData.game().getTeamTurn().equals(ChessGame.TeamColor.WHITE)) {
             System.out.println("You cannot make a move when it is not your turn");
+            return;
         }
+        // TODO: Implement logic to tell observer they cannot make moves before asking for input
         System.out.print("Enter the position of the piece you would like to move (for example, a1): ");
         String startingPosition = SCANNER.nextLine().trim().toLowerCase();
         if (isInvalidPosition(startingPosition)) {
@@ -188,6 +191,7 @@ public class GameplayUI implements NotificationHandler {
     }
 
     public void resign() {
+        // TODO: Implement logic to tell observer they can't resign before asking for input
         System.out.println("Are you sure you would like to resign? (Y/N)");
         String answer = SCANNER.nextLine().trim().toLowerCase();
         if (answer.equals("y")) {
@@ -313,14 +317,22 @@ public class GameplayUI implements NotificationHandler {
             case NOTIFICATION:
                 Notification notification = (Notification) serverMessage;
                 System.out.println();
-                System.out.println(notification.getMessage());
+                System.out.print(SET_TEXT_ITALIC);
+                System.out.print(SET_TEXT_COLOR_BLUE);
+                System.out.print("NOTIFICATION: ");
+                System.out.print(RESET_TEXT_ITALIC);
+                System.out.print(RESET_TEXT_COLOR);
+                System.out.print(notification.getMessage());
                 System.out.println();
+                printPrompt();
                 break;
             case ERROR:
                 Error error = (Error) serverMessage;
                 System.out.println();
+                System.out.print(SET_TEXT_COLOR_RED);
                 System.out.println(error.getErrorMessage());
-                System.out.println();
+                System.out.print(RESET_TEXT_COLOR);
+                printPrompt();
                 break;
         }
     }
