@@ -225,9 +225,6 @@ public class PostLoginUI {
             }
 
             GameData selectedGame = selection.getKey();
-            int gameNumber = selection.getValue();
-
-            int gameID = GAME_ID_MAP.get(gameNumber);
             displayGame(facade, selectedGame, "white", authToken);
         } catch (Exception e) {
             printError("Unable to observe game");
