@@ -1,9 +1,6 @@
 package ui;
 
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import model.GameData;
 import websocket.NotificationHandler;
 import websocket.WebSocketConnection;
@@ -22,6 +19,8 @@ import static ui.EscapeSequences.*;
 
 public class GameplayUI implements NotificationHandler {
     private ChessGame game;
+    private ChessBoard board;
+    private ChessGame.TeamColor currentTurn;
     private final boolean isWhitePlayer;
     private boolean isPlaying = true;
     private final String authToken;
@@ -35,6 +34,8 @@ public class GameplayUI implements NotificationHandler {
 
     public GameplayUI(GameData gameData, boolean isWhitePlayer, boolean isObserver, String authToken, WebSocketConnection webSocketConnection) {
         this.game = gameData.game();
+        this.board = gameData.game().getBoard();
+        this.currentTurn = gameData.game().getTeamTurn();
         this.isWhitePlayer = isWhitePlayer;
         this.isObserver = isObserver;
         this.authToken = authToken;
@@ -126,17 +127,18 @@ public class GameplayUI implements NotificationHandler {
     }
 
     public void move() {
-        // TODO: Figure out turn-tracking issue (server knows correct state of game, but client doesn't...?)
         if (isObserver) {
             System.out.println("Observers cannot make moves");
             return;
         }
-        if (isWhitePlayer && gameData.game().getTeamTurn().equals(ChessGame.TeamColor.BLACK)) {
+        if (isWhitePlayer && currentTurn.equals(ChessGame.TeamColor.BLACK)) {
             System.out.println("You cannot make a move when it is not your turn");
+            justMadeMove = false;
             return;
         }
-        if (!isWhitePlayer && gameData.game().getTeamTurn().equals(ChessGame.TeamColor.WHITE)) {
+        if (!isWhitePlayer && currentTurn.equals(ChessGame.TeamColor.WHITE)) {
             System.out.println("You cannot make a move when it is not your turn");
+            justMadeMove = false;
             return;
         }
         System.out.print("Enter the position of the piece you would like to move (for example, a1): ");
@@ -325,9 +327,7 @@ public class GameplayUI implements NotificationHandler {
         switch (serverMessage.getServerMessageType()) {
             case LOAD_GAME:
                 LoadGame loadGame = (LoadGame) serverMessage;
-                this.game = loadGame.getGame().game();
-                displayBoard();
-                printPrompt();
+                applyServerGameState(loadGame);
                 break;
             case NOTIFICATION:
                 Notification notification = (Notification) serverMessage;
@@ -351,6 +351,19 @@ public class GameplayUI implements NotificationHandler {
                 break;
         }
     }
+
+    private void applyServerGameState(LoadGame loadGame) {
+        this.game = loadGame.getGame().game();
+
+        this.board = game.getBoard();
+        this.currentTurn = game.getTeamTurn();
+        this.highlightedPosition = null;
+        this.highlightedMoves.clear();
+
+        displayBoard();
+        printPrompt();
+    }
+
 
     private void sendCommand(UserGameCommand.CommandType type) {
         UserGameCommand command = new UserGameCommand(type, authToken, gameData.gameID());
