@@ -30,10 +30,13 @@ public class GameplayUI implements NotificationHandler {
     private final static Scanner SCANNER = new Scanner(System.in);
     private Collection<ChessMove> highlightedMoves = new ArrayList<>();
     private ChessPosition highlightedPosition = null;
+    private boolean justMadeMove = false;
+    private final boolean isObserver;
 
-    public GameplayUI(GameData gameData, boolean isWhitePlayer, String authToken, WebSocketConnection webSocketConnection) {
+    public GameplayUI(GameData gameData, boolean isWhitePlayer, boolean isObserver, String authToken, WebSocketConnection webSocketConnection) {
         this.game = gameData.game();
         this.isWhitePlayer = isWhitePlayer;
+        this.isObserver = isObserver;
         this.authToken = authToken;
         this.gameData = gameData;
         this.webSocketConnection = webSocketConnection;
@@ -47,10 +50,14 @@ public class GameplayUI implements NotificationHandler {
             help();
 
             while (isPlaying) {
-                System.out.print(RESET_BG_COLOR);
-                System.out.print(RESET_TEXT_COLOR);
-                System.out.println();
-                printPrompt();
+                // TODO: Figure out if this correctly addresses the prompt-display problem after troubleshooting move problems
+                if (!justMadeMove) {
+                    System.out.print(RESET_BG_COLOR);
+                    System.out.print(RESET_TEXT_COLOR);
+                    System.out.println();
+                    printPrompt();
+                    justMadeMove = false;
+                }
                 String input = SCANNER.nextLine().trim().toLowerCase();
 
                 switch (input) {
@@ -119,6 +126,11 @@ public class GameplayUI implements NotificationHandler {
     }
 
     public void move() {
+        // TODO: Figure out turn-tracking issue (server knows correct state of game, but client doesn't...?)
+        if (isObserver) {
+            System.out.println("Observers cannot make moves");
+            return;
+        }
         if (isWhitePlayer && gameData.game().getTeamTurn().equals(ChessGame.TeamColor.BLACK)) {
             System.out.println("You cannot make a move when it is not your turn");
             return;
@@ -127,7 +139,6 @@ public class GameplayUI implements NotificationHandler {
             System.out.println("You cannot make a move when it is not your turn");
             return;
         }
-        // TODO: Implement logic to tell observer they cannot make moves before asking for input
         System.out.print("Enter the position of the piece you would like to move (for example, a1): ");
         String startingPosition = SCANNER.nextLine().trim().toLowerCase();
         if (isInvalidPosition(startingPosition)) {
@@ -168,6 +179,7 @@ public class GameplayUI implements NotificationHandler {
         }
         MakeMove makeMove = new MakeMove(authToken, gameData.gameID(), move);
         webSocketConnection.sendCommand(makeMove);
+        justMadeMove = true;
     }
 
     private ChessPiece.PieceType selectPromotionPiece(String selection) {
@@ -191,7 +203,10 @@ public class GameplayUI implements NotificationHandler {
     }
 
     public void resign() {
-        // TODO: Implement logic to tell observer they can't resign before asking for input
+        if (isObserver) {
+            System.out.println("Only players can resign");
+            return;
+        }
         System.out.println("Are you sure you would like to resign? (Y/N)");
         String answer = SCANNER.nextLine().trim().toLowerCase();
         if (answer.equals("y")) {
