@@ -27,7 +27,7 @@ public class GameplayUI implements NotificationHandler {
     private final String authToken;
     private final GameData gameData;
     private WebSocketConnection webSocketConnection;
-    private final static Scanner scanner = new Scanner(System.in);
+    private final static Scanner SCANNER = new Scanner(System.in);
     private Collection<ChessMove> highlightedMoves = new ArrayList<>();
     private ChessPosition highlightedPosition = null;
 
@@ -51,7 +51,7 @@ public class GameplayUI implements NotificationHandler {
                 System.out.print(RESET_TEXT_COLOR);
                 System.out.println();
                 printPrompt();
-                String input = scanner.nextLine().trim().toLowerCase();
+                String input = SCANNER.nextLine().trim().toLowerCase();
 
                 switch (input) {
                     case "help" -> help();
@@ -95,7 +95,7 @@ public class GameplayUI implements NotificationHandler {
 
     public void highlight() {
         System.out.print("Enter the position of the piece for which you would like to highlight legal moves (for example, a1): ");
-        String input = scanner.nextLine().trim().toLowerCase();
+        String input = SCANNER.nextLine().trim().toLowerCase();
         if (isInvalidPosition(input)) {
             System.out.println("Invalid position");
             return;
@@ -126,7 +126,7 @@ public class GameplayUI implements NotificationHandler {
             System.out.println("You cannot make a move when it is not your turn");
         }
         System.out.print("Enter the position of the piece you would like to move (for example, a1): ");
-        String startingPosition = scanner.nextLine().trim().toLowerCase();
+        String startingPosition = SCANNER.nextLine().trim().toLowerCase();
         if (isInvalidPosition(startingPosition)) {
             System.out.println("Invalid position");
             return;
@@ -145,7 +145,7 @@ public class GameplayUI implements NotificationHandler {
             return;
         }
         System.out.print("Enter the position you would like to move this piece (for example, a1): ");
-        String endingPosition = scanner.nextLine().trim().toLowerCase();
+        String endingPosition = SCANNER.nextLine().trim().toLowerCase();
         if (isInvalidPosition(endingPosition)) {
             System.out.println("Invalid position");
             return;
@@ -155,12 +155,12 @@ public class GameplayUI implements NotificationHandler {
         ChessMove move;
         if (isWhitePlayer && endPos.getRow() == 8 && type == ChessPiece.PieceType.PAWN) {
             System.out.print("Choose a piece to promote your pawn to (BISHOP/KNIGHT/ROOK/QUEEN): ");
-            String selection = scanner.nextLine().trim().toLowerCase();
+            String selection = SCANNER.nextLine().trim().toLowerCase();
             move = new ChessMove(startPos, endPos, selectPromotionPiece(selection));
         }
         else if (!isWhitePlayer && endPos.getRow() == 1 && type == ChessPiece.PieceType.PAWN) {
             System.out.print("Choose a piece to promote your pawn to (BISHOP/KNIGHT/ROOK/QUEEN): ");
-            String selection = scanner.nextLine().trim().toLowerCase();
+            String selection = SCANNER.nextLine().trim().toLowerCase();
             move = new ChessMove(startPos, endPos, selectPromotionPiece(selection));
         }
         else {
@@ -192,7 +192,7 @@ public class GameplayUI implements NotificationHandler {
 
     public void resign() {
         System.out.println("Are you sure you would like to resign? (Y/N)");
-        String answer = scanner.nextLine().trim().toLowerCase();
+        String answer = SCANNER.nextLine().trim().toLowerCase();
         if (answer.equals("y")) {
             sendCommand(UserGameCommand.CommandType.RESIGN);
         }
