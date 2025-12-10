@@ -46,7 +46,7 @@ public class GameplayUI implements NotificationHandler {
                     case "highlight" -> highlight();
                     case "move" -> move();
                     case "resign" -> resign();
-                    case "leave" -> leave();  // TODO: Ensure leave returns the user to PostLoginUI
+                    case "leave" -> leave();
                     default -> System.out.println("Unknown command. Type 'help' to see a list of available commands.");
                 }
             }
@@ -93,7 +93,6 @@ public class GameplayUI implements NotificationHandler {
     }
 
     public void leave() {
-        // TODO: Ensure leave returns the user to PostLoginUI
         System.out.println("Leaving game...");
         isPlaying = false;
     }
