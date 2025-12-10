@@ -28,6 +28,7 @@ public class GameplayUI implements NotificationHandler {
     private WebSocketConnection webSocketConnection;
     private final static Scanner SCANNER = new Scanner(System.in);
     private Collection<ChessMove> highlightedMoves = new ArrayList<>();
+    private Collection<ChessMove> validMoves = null;
     private ChessPosition highlightedPosition = null;
     private boolean justMadeMove = false;
     private final boolean isObserver;
@@ -102,23 +103,41 @@ public class GameplayUI implements NotificationHandler {
     }
 
     public void highlight() {
+        this.highlightedMoves = new ArrayList<>();
+        this.highlightedPosition = null;
+        this.validMoves = null;
+
+        if (board == null) {
+            System.out.println("Board has not been initialized");
+            justMadeMove = false;
+            return;
+        }
+
         System.out.print("Enter the position of the piece for which you would like to highlight legal moves (for example, a1): ");
         String input = SCANNER.nextLine().trim().toLowerCase();
         if (isInvalidPosition(input)) {
             System.out.println("Invalid position");
+            justMadeMove = false;
             return;
         }
 
-        // TODO: Figure out why after moving a piece, highlight doesn't update and instead says there is no piece on the space the piece moved to (still highlights where the piece was previously)
-        ChessPosition position = constructChessPosition(input);
-        ChessPiece piece = gameData.game().getBoard().getPiece(position);
+        ChessPosition selectedPosition = constructChessPosition(input);
+        ChessPiece piece = board.getPiece(selectedPosition);
         if (piece == null) {
             System.out.println("No piece on " + input);
+            justMadeMove = false;
             return;
         }
 
-        highlightedMoves = gameData.game().validMoves(position);
-        highlightedPosition = position;
+        this.validMoves = game.validMoves(selectedPosition);
+        if (validMoves == null || validMoves.isEmpty()) {
+            System.out.println("No valid moves for selected piece");
+            justMadeMove = false;
+            return;
+        }
+
+        this.highlightedPosition = selectedPosition;
+        this.highlightedMoves.addAll(validMoves);
 
         displayBoard();
 
@@ -358,6 +377,7 @@ public class GameplayUI implements NotificationHandler {
         this.board = game.getBoard();
         this.currentTurn = game.getTeamTurn();
         this.highlightedPosition = null;
+        this.validMoves = null;
         this.highlightedMoves.clear();
 
         displayBoard();
