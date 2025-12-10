@@ -4,6 +4,7 @@ import model.GameData;
 import requests.CreateGameRequest;
 import requests.JoinGameRequest;
 import server.ServerFacade;
+import websocket.WebSocketConnection;
 
 import java.util.*;
 
@@ -96,10 +97,12 @@ public class PostLoginUI {
         }
     }
 
-    private static void displayGame(GameData gameData, String color) {
+    private static void displayGame(ServerFacade facade, GameData gameData, String color, String authToken) {
         try {
             boolean whiteView = color.equals("white");
-            GameplayUI gameplayUI = new GameplayUI(gameData, whiteView);
+            GameplayUI gameplayUI = new GameplayUI(gameData, whiteView, authToken, null);
+            WebSocketConnection webSocketConnection = facade.initWebSocket(gameplayUI);
+            gameplayUI.setWebSocketConnection(webSocketConnection);
             gameplayUI.run();
         } catch (Exception e) {
             System.out.print(SET_TEXT_COLOR_RED);
@@ -198,7 +201,7 @@ public class PostLoginUI {
             }
             int gameID = GAME_ID_MAP.get(gameNumber);
             facade.joinGame(new JoinGameRequest(color, gameID), authToken);
-            displayGame(selectedGame, color);
+            displayGame(facade, selectedGame, color, authToken);
         } catch (Exception e) {
             System.out.print(SET_TEXT_COLOR_RED);
             if (e.getMessage().contains("400")) {
@@ -225,7 +228,7 @@ public class PostLoginUI {
             int gameNumber = selection.getValue();
 
             int gameID = GAME_ID_MAP.get(gameNumber);
-            displayGame(selectedGame, "white");
+            displayGame(facade, selectedGame, "white", authToken);
         } catch (Exception e) {
             printError("Unable to observe game");
         }
