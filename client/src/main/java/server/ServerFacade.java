@@ -10,6 +10,8 @@ import responses.CreateGameResponse;
 import responses.ListGamesResponse;
 import responses.LoginResponse;
 import responses.RegisterResponse;
+import websocket.NotificationHandler;
+import websocket.WebSocketConnection;
 
 import java.net.*;
 import java.net.http.*;
@@ -25,6 +27,10 @@ public class ServerFacade {
 
     public ServerFacade(String url) {
         serverUrl = url;
+    }
+
+    public WebSocketConnection initWebSocket(NotificationHandler handler) {
+        return new WebSocketConnection(serverUrl, handler);
     }
 
     public void clear() throws Exception {
