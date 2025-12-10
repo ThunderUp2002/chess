@@ -17,6 +17,7 @@ import static ui.EscapeSequences.*;
 public class GameplayUI implements NotificationHandler {
     private ChessGame game;
     private final boolean isWhitePlayer;
+    private boolean isPlaying = true;
 
     public GameplayUI(GameData gameData, boolean isWhitePlayer) {
         this.game = gameData.game();
@@ -31,7 +32,7 @@ public class GameplayUI implements NotificationHandler {
 
             Scanner scanner = new Scanner(System.in);
 
-            while (true) {
+            while (isPlaying) {
                 System.out.print(RESET_BG_COLOR);
                 System.out.print(RESET_TEXT_COLOR);
                 System.out.println();
@@ -57,7 +58,7 @@ public class GameplayUI implements NotificationHandler {
         }
     }
 
-    public static void help() {
+    public void help() {
         System.out.println();
         System.out.print(SET_TEXT_COLOR_BLUE + "HELP:");
         System.out.print(RESET_TEXT_COLOR);
@@ -79,21 +80,22 @@ public class GameplayUI implements NotificationHandler {
         System.out.println(" exit the game");
     }
 
-    public static void highlight() {
+    public void highlight() {
 
     }
 
-    public static void move() {
+    public void move() {
 
     }
 
-    public static void resign() {
+    public void resign() {
 
     }
 
-    public static void leave() {
+    public void leave() {
         // TODO: Ensure leave returns the user to PostLoginUI
         System.out.println("Leaving game...");
+        isPlaying = false;
     }
 
     private void displayBoard() {
