@@ -100,6 +100,7 @@ public class GameplayUI implements NotificationHandler {
         System.out.print(SET_TEXT_COLOR_BLUE + "LEAVE: ");
         System.out.print(RESET_TEXT_COLOR);
         System.out.println(" exit the game");
+        justMadeMove = false;
     }
 
     public void highlight() {
@@ -143,11 +144,15 @@ public class GameplayUI implements NotificationHandler {
 
         highlightedMoves = new ArrayList<>();
         highlightedPosition = null;
+        justMadeMove = false;
     }
 
     public void move() {
+        this.validMoves = null;
+
         if (isObserver) {
             System.out.println("Observers cannot make moves");
+            justMadeMove = false;
             return;
         }
         if (isWhitePlayer && currentTurn.equals(ChessGame.TeamColor.BLACK)) {
@@ -164,29 +169,41 @@ public class GameplayUI implements NotificationHandler {
         String startingPosition = SCANNER.nextLine().trim().toLowerCase();
         if (isInvalidPosition(startingPosition)) {
             System.out.println("Invalid position");
+            justMadeMove = false;
             return;
         }
         ChessPosition startPos = constructChessPosition(startingPosition);
-        if (gameData.game().getBoard().getPiece(startPos) == null) {
+        ChessPiece piece = board.getPiece(startPos);
+        if (piece == null) {
             System.out.println("There is no piece on " + startingPosition);
+            justMadeMove = false;
             return;
         }
-        if (isWhitePlayer && gameData.game().getBoard().getPiece(startPos).getTeamColor().equals(ChessGame.TeamColor.BLACK)) {
+        if (isWhitePlayer && piece.getTeamColor().equals(ChessGame.TeamColor.BLACK)) {
             System.out.println("You may not move the other player's pieces");
+            justMadeMove = false;
             return;
         }
-        if (!isWhitePlayer && gameData.game().getBoard().getPiece(startPos).getTeamColor().equals(ChessGame.TeamColor.WHITE)) {
+        if (!isWhitePlayer && piece.getTeamColor().equals(ChessGame.TeamColor.WHITE)) {
             System.out.println("You may not move the other player's pieces");
+            justMadeMove = false;
+            return;
+        }
+        this.validMoves = game.validMoves(startPos);
+        if (validMoves == null|| validMoves.isEmpty()) {
+            System.out.println("No valid moves for selected piece");
+            justMadeMove = false;
             return;
         }
         System.out.print("Enter the position you would like to move this piece (for example, a1): ");
         String endingPosition = SCANNER.nextLine().trim().toLowerCase();
         if (isInvalidPosition(endingPosition)) {
             System.out.println("Invalid position");
+            justMadeMove = false;
             return;
         }
         ChessPosition endPos = constructChessPosition(endingPosition);
-        ChessPiece.PieceType type = gameData.game().getBoard().getPiece(startPos).getPieceType();
+        ChessPiece.PieceType type = piece.getPieceType();
         ChessMove move;
         boolean isPromotion = (isWhitePlayer && endPos.getRow() == 8 && type == ChessPiece.PieceType.PAWN) ||
                 (!isWhitePlayer && endPos.getRow() == 1 && type == ChessPiece.PieceType.PAWN);
@@ -194,13 +211,26 @@ public class GameplayUI implements NotificationHandler {
             System.out.print("Choose a piece to promote your pawn to (BISHOP/KNIGHT/ROOK/QUEEN): ");
             String selection = SCANNER.nextLine().trim().toLowerCase();
             move = new ChessMove(startPos, endPos, selectPromotionPiece(selection));
+            if (!validMoves.contains(move)) {
+                System.out.println("Invalid move for selected piece");
+                justMadeMove = false;
+                return;
+            }
         }
         else {
             move = new ChessMove(startPos, endPos, null);
+            if (!validMoves.contains(move)) {
+                System.out.println("Invalid move for selected piece");
+                justMadeMove = false;
+                return;
+            }
         }
         MakeMove makeMove = new MakeMove(authToken, gameData.gameID(), move);
         webSocketConnection.sendCommand(makeMove);
         justMadeMove = true;
+        this.highlightedMoves.clear();
+        this.highlightedPosition = null;
+        this.validMoves = null;
     }
 
     private ChessPiece.PieceType selectPromotionPiece(String selection) {
@@ -226,12 +256,14 @@ public class GameplayUI implements NotificationHandler {
     public void resign() {
         if (isObserver) {
             System.out.println("Only players can resign");
+            justMadeMove = false;
             return;
         }
         System.out.println("Are you sure you would like to resign? (Y/N)");
         String answer = SCANNER.nextLine().trim().toLowerCase();
         if (answer.equals("y")) {
             sendCommand(UserGameCommand.CommandType.RESIGN);
+            justMadeMove = false;
         }
     }
 
@@ -275,6 +307,8 @@ public class GameplayUI implements NotificationHandler {
         }
 
         drawHeader();
+
+        justMadeMove = false;
     }
 
     private void drawRow(int row) {
